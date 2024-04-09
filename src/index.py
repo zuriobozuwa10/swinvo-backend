@@ -1,6 +1,10 @@
 from flask import Flask, jsonify, request
 
+from openai_model_user import OpenAiModelUser
+
 app = Flask(__name__)
+
+model = OpenAiModelUser()
 
 @app.route("/")
 def hello_world():
@@ -10,5 +14,7 @@ def hello_world():
 def create_workflow():
     input_text = request.json['text']
     print(input_text)
-    apple = {"message": input_text + "Ayooo 6666"}
+
+    model_response = OpenAiModelUser.Use(input_text)
+    apple = {"message": model_response}
     return jsonify(apple)
