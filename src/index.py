@@ -13,8 +13,11 @@ def hello_world():
 @app.route("/create-workflow", methods = ['POST'])
 def create_workflow():
     input_text = request.json['text']
-    print(input_text)
 
+    print(model.GetConvoHistory())
     model_response = model.Use(input_text)
+    print(model.GetConvoHistory())
+
     apple = {"message": model_response}
+
     return jsonify(apple)

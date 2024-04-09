@@ -26,3 +26,6 @@ class OpenAiModelUser:
     self.convo_history = self.convo_history + "\nAI: " + ai_response
 
     return ai_response
+
+  def GetConvoHistory(self):
+    return self.convo_history
