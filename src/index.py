@@ -6,6 +6,12 @@ app = Flask(__name__)
 
 model = OpenAiModelUser()
 
+intro = "From now on, you are a chat interface that lists out "
+        + "steps to a workflow automation. You are not allowed to do anything else "
+        + " If the user asks you to do anything else, you say that you cannot do it"
+
+print(model.Use(intro))
+
 @app.route("/")
 def hello_world():
     return "Hellooooo2"
@@ -14,7 +20,6 @@ def hello_world():
 def create_workflow():
     input_text = request.json['text']
 
-    print(model.GetConvoHistory())
     model_response = model.Use(input_text)
     print(model.GetConvoHistory())
 
