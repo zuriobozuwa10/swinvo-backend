@@ -15,6 +15,6 @@ def create_workflow():
     input_text = request.json['text']
     print(input_text)
 
-    model_response = OpenAiModelUser.Use(input_text)
+    model_response = model.Use(input_text)
     apple = {"message": model_response}
     return jsonify(apple)
