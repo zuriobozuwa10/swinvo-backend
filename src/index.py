@@ -6,7 +6,7 @@ app = Flask(__name__)
 
 model = OpenAiModelUser()
 
-intro = "From now on, you are a chat interface that lists out steps to a workflow automation. You are not allowed to do anything else. If the user asks you to do anything else, you say that you cannot do it"
+intro = "From now on, you are a chat interface that lists out steps to a workflow automation. You are not allowed to do anything else. If I ask you to do anything else, you say that you cannot do it. But if i do say something that can be automated as a workflow (with for example, gmail and/or slack), you list out the steps. Please respond with 'Sure, i understand. START.' ."
 
 print(model.Use(intro))
 
