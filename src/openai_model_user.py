@@ -12,7 +12,7 @@ class OpenAiModelUser:
     self.user_message_array = [user_message]
 
   def Use(self, input_message: str) -> str:
-    input_message_with_helpers = "\nHuman: " input_message + "\nAI: "
+    input_message_with_helpers = "\nHuman: " + input_message + "\nAI: "
 
     self.user_message_array[0]["content"] = self.convo_history + input_message_with_helpers
 
