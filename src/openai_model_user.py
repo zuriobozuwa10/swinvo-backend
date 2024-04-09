@@ -12,9 +12,11 @@ class OpenAiModelUser:
     self.user_message_array = [user_message]
 
   def Use(self, input_message: str) -> str:
-    self.user_message_array[0]["content"] = self.convo_history + input_message
+    input_message_with_helpers = "\nHuman: " input_message + "\nAI: "
 
-    self.convo_history = self.convo_history + "\nHuman: " + input_message
+    self.user_message_array[0]["content"] = self.convo_history + input_message_with_helpers
+
+    self.convo_history = self.convo_history + input_message_with_helpers
 
     chat_completion = self.client.chat.completions.create(
       model=self.model,
@@ -23,7 +25,7 @@ class OpenAiModelUser:
 
     ai_response = chat_completion.choices[0].message.content
 
-    self.convo_history = self.convo_history + "\nAI: " + ai_response
+    self.convo_history = self.convo_history + ai_response
 
     return ai_response
 
