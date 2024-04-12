@@ -19,6 +19,9 @@ def hello_world():
 
 @app.route("/create-workflow", methods = ['POST'])
 def create_workflow():
+
+    print(user_sessions)
+
     user_id = request.json['uid']
 
     if user_id not in user_sessions:
