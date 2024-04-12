@@ -22,6 +22,8 @@ def hello_world():
 def create_workflow():
     input_text = request.json['text']
 
+    print("USER ID: " + request.json['uid'])
+
     model_response = model.Use(input_text)
     print(model.GetConvoHistory())
 
