@@ -4,15 +4,14 @@ from openai_model_user import OpenAiModelUser
 
 app = Flask(__name__)
 
-model = OpenAiModelUser()
-
+#model = OpenAiModelUser()
 
 intro_path = "intro.txt"
 
+user_sessions = {}
+
 with open(intro_path, 'r') as file:
     intro = file.read()
-
-print(model.Use(intro))
 
 @app.route("/")
 def hello_world():
@@ -20,12 +19,18 @@ def hello_world():
 
 @app.route("/create-workflow", methods = ['POST'])
 def create_workflow():
+    user_id = request.json['uid']
+
+    if user_id not in user_sessions:
+        user_model = OpenAiModelUser()
+        user_model.Use(intro)
+        user_sessions[user_id] = user_model
+
     input_text = request.json['text']
 
-    print("USER ID: " + request.json['uid'])
+    model_response = user_sessions[user_id].Use(input_text)
 
-    model_response = model.Use(input_text)
-    print(model.GetConvoHistory())
+    #print(model.GetConvoHistory())
 
     apple = {"message": model_response}
 
