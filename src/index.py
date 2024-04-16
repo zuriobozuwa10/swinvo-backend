@@ -59,6 +59,9 @@ def auth_session():
     else:
         print("NO USER ID!")
         flask.abort(400, "Error: no user ID received.")
+    
+    print(session['user_id'])
+
     return ''
 
 
@@ -80,6 +83,8 @@ def gmail_auth_callback():
         'redirect_uri': redirect_uri,
         'grant_type': 'authorization_code'
     }
+
+    print(session)
 
     session_user_id = session.get('user_id')
 
