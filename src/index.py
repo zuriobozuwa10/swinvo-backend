@@ -59,7 +59,7 @@ def auth_session():
     else:
         print("NO USER ID!")
         flask.abort(400, "Error: no user ID received.")
-    return None
+    return ''
 
 
 @app.route("/gmail-auth-callback")
