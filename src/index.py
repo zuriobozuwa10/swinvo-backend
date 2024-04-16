@@ -83,7 +83,7 @@ def gmail_auth_callback():
 
     session_user_id = session.get('user_id')
 
-    if 'user_id' in session:
+    if session_user_id:
         user_id = session['user_id']
     else:
         print('No user ID in session. Expect exception to be thrown')
@@ -112,5 +112,5 @@ def gmail_send_email():
 @app.route("/debug-print")
 def debug_print():
     print(user_chat_sessions)
-    print(user_id_sessions)
+    print(session)
     print(gmail_user_tokens)
