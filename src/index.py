@@ -51,6 +51,7 @@ def gmail_auth_callback():
     token_url = 'https://oauth2.googleapis.com/token'
 
     print("AUTH CODE: " + auth_code)
+    print("CLIENT ID: " + client_id)
 
     data = {
         'code': auth_code,
