@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, redirect, session
+from flask import Flask, jsonify, request, redirect
 import flask
 import requests
 import os
@@ -16,7 +16,7 @@ intro_path = "intro.txt"
 user_chat_sessions = {}
 
 # Used to associate an app (e.g gmail) integration with a swinvo account
-user_id_sessions = []
+state_tokens = {}
 
 # Each token tuple: (access_token, refresh_token)
 gmail_user_tokens = {}
@@ -53,14 +53,15 @@ def create_workflow():
 
 @app.route("/auth-session", methods = ['POST'])
 def auth_session():
+    state = request.json['state']
     user_id = request.json['uid']
     if user_id != "N/A":
-        session['user_id'] = user_id
+        state_tokens[state] = user_id
     else:
         print("NO USER ID!")
         flask.abort(400, "Error: no user ID received.")
-    
-    print(session['user_id'])
+
+    print(state_tokens)
 
     return ''
 
@@ -85,15 +86,13 @@ def gmail_auth_callback():
         'grant_type': 'authorization_code'
     }
 
-    print(session)
+    state = request.args.get('state')
 
-    session_user_id = session.get('user_id')
-
-    if session_user_id:
-        user_id = session['user_id']
+    if state in state_tokens:
+        user_id = state_tokens[state]
     else:
-        print('No user ID in session. Aborting')
-        flask.abort(400, 'No user ID in session')
+        print('Unknown state. Aborting')
+        flask.abort(400, 'User state unknown')
 
     response = requests.post(token_url, data)
     
@@ -119,5 +118,5 @@ def gmail_send_email():
 @app.route("/debug-print")
 def debug_print():
     print(user_chat_sessions)
-    print(session)
+    print(state_tokens)
     print(gmail_user_tokens)
