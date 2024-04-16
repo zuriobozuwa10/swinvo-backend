@@ -90,7 +90,7 @@ def gmail_auth_callback():
     if state in state_tokens:
         user_id = state_tokens[state]
     else:
-        print('Unknown state. Aborting')
+        print('Unknown state: ' + state + ' . Aborting')
         flask.abort(400, 'User state unknown')
 
     response = requests.post(token_url, data)
