@@ -1,4 +1,5 @@
 from flask import Flask, jsonify, request, redirect, session
+import flask
 import requests
 import os
 from openai_model_user import OpenAiModelUser
@@ -53,7 +54,12 @@ def create_workflow():
 def auth_session():
     user_id = request.json['uid']
     session_user_id = session.get('user_id')
-    user_id_sessions[session_user_id] = user_id
+    if session_user_id:
+        user_id_sessions[session_user_id] = user_id
+    else:
+        print("NO SESSION!")
+        flask.abort(400, "Error: no session received.")
+    return None
 
 
 @app.route("/gmail-auth-callback")
