@@ -5,6 +5,7 @@ import os
 from openai_model_user import OpenAiModelUser
 
 app = Flask(__name__)
+app.secret_key = ''
 
 #model = OpenAiModelUser()
 
@@ -15,7 +16,7 @@ intro_path = "intro.txt"
 user_chat_sessions = {}
 
 # Used to associate an app (e.g gmail) integration with a Swinvo account
-user_id_sessions = {}
+user_id_sessions = []
 
 # Each token tuple: (access_token, refresh_token)
 gmail_user_tokens = {}
@@ -53,12 +54,11 @@ def create_workflow():
 @app.route("/auth-session", methods = ['POST'])
 def auth_session():
     user_id = request.json['uid']
-    session_user_id = session.get('user_id')
-    if session_user_id:
-        user_id_sessions[session_user_id] = user_id
+    if user_id != "N/A":
+        session['user_id'] = user_id
     else:
-        print("NO SESSION!")
-        flask.abort(400, "Error: no session received.")
+        print("NO USER ID!")
+        flask.abort(400, "Error: no user ID received.")
     return None
 
 
@@ -83,10 +83,10 @@ def gmail_auth_callback():
 
     session_user_id = session.get('user_id')
 
-    if session_user_id in user_id_sessions:
-        user_id = user_id_sessions[session_user_id]
+    if 'user_id' in session:
+        user_id = session['user_id']
     else:
-        print('No active session that can determine the user. Expect exception to be thrown')
+        print('No user ID in session. Expect exception to be thrown')
 
     response = requests.post(token_url, data)
     
