@@ -5,7 +5,6 @@ import os
 from openai_model_user import OpenAiModelUser
 
 app = Flask(__name__)
-app.secret_key = ''
 
 #model = OpenAiModelUser()
 
