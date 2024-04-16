@@ -93,7 +93,7 @@ def gmail_auth_callback():
         user_id = session['user_id']
     else:
         print('No user ID in session. Aborting')
-        abort(400, 'No user ID in session')
+        flask.abort(400, 'No user ID in session')
 
     response = requests.post(token_url, data)
     
