@@ -15,7 +15,7 @@ intro_path = "intro.txt"
 # Resets after every deployment
 user_chat_sessions = {}
 
-# Used to associate an app (e.g gmail) integration with a Swinvo account
+# Used to associate an app (e.g gmail) integration with a swag account
 user_id_sessions = []
 
 # Each token tuple: (access_token, refresh_token)
@@ -70,11 +70,12 @@ def gmail_auth_callback():
     auth_code = request.args.get('code')
     client_id = os.environ.get('GMAIL_CLIENT_ID')
     client_secret = os.environ.get('GMAIL_CLIENT_SECRET')
-    redirect_uri = 'https://auth.swinvo.com/gmail-auth-callback'
+    redirect_uri = 'https://auth.swag.com/gmail-auth-callback'
     token_url = 'https://oauth2.googleapis.com/token'
 
-    print("AUTH CODE: " + auth_code)
-    print("CLIENT ID: " + client_id)
+    if auth_code and client_id:
+        print("AUTH CODE: " + auth_code)
+        print("CLIENT ID: " + client_id)
 
     data = {
         'code': auth_code,
@@ -91,7 +92,8 @@ def gmail_auth_callback():
     if session_user_id:
         user_id = session['user_id']
     else:
-        print('No user ID in session. Expect exception to be thrown')
+        print('No user ID in session. Aborting')
+        abort(400, 'No user ID in session')
 
     response = requests.post(token_url, data)
     
@@ -102,7 +104,7 @@ def gmail_auth_callback():
     else:
         print ("BAD RESPONSE")
 
-    return redirect("https://app.swinvo.com")
+    return redirect("https://app.swag.com")
 
 
 @app.route("/check-gmail-permission", methods = ['GET', 'POST']) #??
