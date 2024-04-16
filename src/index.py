@@ -65,7 +65,7 @@ def gmail_auth_callback():
     
     if response.status_code == 200:
         tokens = response.json()
-        print("TOKEN JSON: " + tokens)
+        print(tokens)
     else:
         print ("BAD RESPONSE")
 
