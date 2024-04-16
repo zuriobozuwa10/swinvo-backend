@@ -47,7 +47,7 @@ def gmail_auth_callback():
     auth_code = request.args.get('code')
     client_id = os.environ.get('GMAIL_CLIENT_ID')
     client_secret = os.environ.get('GMAIL_CLIENT_SECRET')
-    redirect_uri = 'https://spoon-app-rh8fm.ondigitalocean.app/gmail-auth-callback'
+    redirect_uri = 'https://auth.swinvo.com/gmail-auth-callback'
     token_url = 'https://oauth2.googleapis.com/token'
 
     print("AUTH CODE: " + auth_code)
@@ -69,13 +69,12 @@ def gmail_auth_callback():
     else:
         print ("BAD RESPONSE")
 
-    
-
     return redirect("https://app.swinvo.com")
 
-    
 
-    
+@app.route("/check-gmail-permission", methods = ['GET', 'POST']) #??
+def check_gmail_permission():
+    pass
 
 @app.route("/gmail-send-email", methods = ['GET', 'POST']) #??
 def gmail_send_email():
