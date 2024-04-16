@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request
-
+import requests
+import os
 from openai_model_user import OpenAiModelUser
 
 app = Flask(__name__)
@@ -8,6 +9,8 @@ app = Flask(__name__)
 
 intro_path = "intro.txt"
 
+# Store user chat sessions in a dictionary for now. TODO (ZO): Improve this.
+# Resets after every deployment
 user_sessions = {}
 
 with open(intro_path, 'r') as file:
@@ -38,3 +41,33 @@ def create_workflow():
     apple = {"message": model_response}
 
     return jsonify(apple)
+
+@app.route("/gmail-auth-callback")
+def gmail_auth_callback():
+    auth_code = request.args.get('code')
+    client_id = os.environ.get('GMAIL_CLIENT_ID')
+    client_secret = os.environ.get('GMAIL_CLIENT_SECRET')
+    redirect_uri = 'https://spoon-app-rh8fm.ondigitalocean.app/gmail-auth-callback'
+    token_url = 'https://oauth2.googleapis.com/token'
+
+    print("AUTH CODE: " + auth_code)
+
+    data = {
+        'code': auth_code,
+        'client_id': client_id,
+        'client_secret': client_secret,
+        'redirect_uri': redirect_uri,
+        'grant_type': 'authorization_code'
+    }
+
+    response = requests.post(token_url, data)
+    
+    if response.status_code == 200:
+        tokens = response.json()
+        print("TOKEN JSON: " + tokens)
+
+    
+
+@app.route("/gmail-send-email", methods = ['GET', 'POST']) #??
+def gmail_send_email():
+    pass
