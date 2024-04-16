@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, redirect
 import requests
 import os
 from openai_model_user import OpenAiModelUser
@@ -71,7 +71,7 @@ def gmail_auth_callback():
 
     
 
-    return "Real s"
+    return redirect("https://app.swinvo.com")
 
     
 
