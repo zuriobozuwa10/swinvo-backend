@@ -3,3 +3,4 @@ Werkzeug==2.2.2
 pypdf
 gunicorn
 openai
+requests
