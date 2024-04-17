@@ -8,9 +8,9 @@ class DatabaseAccessor:
     try:
       # Try listing databases to check connection status
       database_names = self.client.list_database_names()
-      print("Connection successful. Available databases:", database_names)
+      print("MongoDB Connection successful. Available databases:", database_names)
     except pymongo.errors.ServerSelectionTimeoutError as err:
-      print("Connection failed:", err)
+      print("MongoDB Connection failed:", err)
 
   def AddUserGmailAuth(self, user_id: str, access_token: str, refresh_token: str) -> bool:
     database = self.client["swinvo-database"]
