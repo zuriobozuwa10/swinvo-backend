@@ -4,3 +4,4 @@ pypdf
 gunicorn
 openai
 requests
+pymongo

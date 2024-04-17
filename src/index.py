@@ -2,9 +2,13 @@ from flask import Flask, jsonify, request, redirect
 import flask
 import requests
 import os
+
 from openai_model_user import OpenAiModelUser
+from database_accessor import DatabaseAccessor
 
 app = Flask(__name__)
+
+database = DatabaseAccessor(os.environ.get('MONGO_DB_USER'), os.environ.get('MONGO_DB_PASSWORD'))
 
 #model = OpenAiModelUser()
 
@@ -99,6 +103,10 @@ def gmail_auth_callback():
         tokens = response.json()
         gmail_user_tokens[user_id] = (tokens.get('access_token'), tokens.get('refresh_token'))
         print(tokens)
+        result = database.AddUserGmailAuth( user_id, tokens.get('access_token'), tokens.get('refresh_token') )
+        if result is false:
+            flask.abort(500, "FAILED TO ADD USER AUTH TOKENS TO DATABASE")
+
     else:
         print ("BAD RESPONSE")
 
