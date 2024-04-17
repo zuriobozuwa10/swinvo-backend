@@ -5,6 +5,13 @@ class DatabaseAccessor:
     self.connection_string = f"mongodb+srv://{username}:{password}@cluster0.ifrrpwr.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
     self.client = client = pymongo.MongoClient(self.connection_string)
 
+    try:
+      # Try listing databases to check connection status
+      database_names = self.client.list_database_names()
+      print("Connection successful. Available databases:", database_names)
+    except pymongo.errors.ServerSelectionTimeoutError as err:
+      print("Connection failed:", err)
+
   def AddUserGmailAuth(self, user_id: str, access_token: str, refresh_token: str) -> bool:
     database = self.client["swinvo-database"]
     gmail_user_auths_collection = database["user-gmail-auths"]
