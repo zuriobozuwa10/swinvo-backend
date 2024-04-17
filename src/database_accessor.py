@@ -16,6 +16,8 @@ class DatabaseAccessor:
     }
 
     insert_result = gmail_user_auths_collection.insert_one(gmail_auth_document)
+    
+    return insert_result
 
 
 
