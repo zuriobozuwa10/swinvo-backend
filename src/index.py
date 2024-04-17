@@ -119,3 +119,11 @@ def debug_print():
     print(user_chat_sessions)
     print(state_tokens)
     print(gmail_user_tokens)
+
+@app.route("/debug-endpoint-1")
+def debug_endpoint_1():
+    print("ENDPOINT 1 REACHED")
+
+@app.route("/debug-endpoint-2")
+def debug_endpoint_2():
+    print("ENDPOINT 2 REACHED")
