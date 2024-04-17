@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, redirect
+from flask import request, redirect
 import flask
 import requests
 import os
@@ -6,7 +6,7 @@ import os
 from openai_model_user import OpenAiModelUser
 from database_accessor import DatabaseAccessor
 
-app = Flask(__name__)
+app = flask.Flask(__name__)
 
 database = DatabaseAccessor(os.environ.get('MONGO_DB_USER'), os.environ.get('MONGO_DB_PASSWORD'))
 
@@ -51,7 +51,18 @@ def create_workflow():
 
     apple = {"message": model_response}
 
-    return jsonify(apple)
+    return flask.jsonify(apple)
+
+
+@app.route("/check-gmail-auth", methods = ['POST'])
+def check_gmail_auth():
+    user_id = request.json['uid']
+
+    database.CheckUserGmailAuth(user_id)
+
+    gmail_auth = {"gmail_auth": True}
+
+    return flask.jsonify(gmail_auth)
 
 
 @app.route("/auth-session", methods = ['POST'])

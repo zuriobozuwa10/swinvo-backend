@@ -26,6 +26,17 @@ class DatabaseAccessor:
     
     return insert_result
 
+  def CheckUserGmailAuth(self, user_id: str) -> bool:
+    database = self.client["swinvo-database"]
+    gmail_user_auths_collection = database["user-gmail-auths"]
+
+    find_user = gmail_user_auths_collection.find_one({"auth0_user_id": user_id})
+
+    if find_user:
+      return True
+    else:
+      return False
+
 
 
     
