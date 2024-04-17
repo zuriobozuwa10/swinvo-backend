@@ -58,11 +58,16 @@ def create_workflow():
 def check_gmail_auth():
     user_id = request.json['uid']
 
-    database.CheckUserGmailAuth(user_id)
+    gmail_is_authed = database.CheckUserGmailAuth(user_id)
 
-    gmail_auth = {"gmail_auth": True}
+    gmail_auth_dict = {}
 
-    return flask.jsonify(gmail_auth)
+    if gmail_is_authed:
+        gmail_auth_dict["gmail_auth"] = True
+    else:
+        gmail_auth_dict["gmail_auth"] = False
+
+    return flask.jsonify(gmail_auth_dict)
 
 
 @app.route("/auth-session", methods = ['POST'])
