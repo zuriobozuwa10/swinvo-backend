@@ -104,7 +104,7 @@ def gmail_auth_callback():
         gmail_user_tokens[user_id] = (tokens.get('access_token'), tokens.get('refresh_token'))
         print(tokens)
         result = database.AddUserGmailAuth( user_id, tokens.get('access_token'), tokens.get('refresh_token') )
-        if result is false:
+        if result is False:
             flask.abort(500, "FAILED TO ADD USER AUTH TOKENS TO DATABASE")
 
     else:
