@@ -37,6 +37,16 @@ class DatabaseAccessor:
     else:
       return False
 
+  def GetUserGmailTokens(self, user_id: str) -> (str, str): # access, refresh
+    database = self.client["swinvo-database"]
+    gmail_user_auths_collection = database["user-gmail-auths"]
+
+    user_document = gmail_user_auths_collection.find_one({"auth0_user_id": user_id})
+
+    tokens = (user_document["gmail_access_token"], user_document["gmail_refresh_token"])
+
+    return tokens
+
 
 
     
