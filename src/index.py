@@ -48,7 +48,8 @@ def create_workflow():
     input_text = request.json['text']
 
     model_response = user_chat_sessions[user_id].Use(input_text)
-    print(model_response)
+
+    print(model_response) # debug
 
     #print(model.GetConvoHistory())
 
