@@ -3,6 +3,8 @@ import flask
 import requests
 import os
 
+import yaml
+
 from openai_model_user import OpenAiModelUser
 from database_accessor import DatabaseAccessor
 

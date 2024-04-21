@@ -8,9 +8,16 @@ class LlmJudgement:
     prompt = f"From now on, I am going to give you an input text, and i want you to to answer this question about the input text, with either Yes or No. Here is the question: {question}. And here is the input text: {input_text}"
     #print(prompt)
     string_response = self.model.Use(prompt)
-    #print(string_response)
+    print(string_response)
     if "Yes" in string_response or "yes" in string_response:
       return True
     else:
       return False
+  
+  def Task(self, instruction: str, input_text: str) -> str:
+    prompt = f"From now on, I am going to give you an input text, and i want you to perform a task regarding the input text. I want you to give me the result only. Here is the instruction: {instruction}. And here is the input text: {input_text}"
+    #print(prompt)
+    string_response = self.model.Use(prompt)
+
+    return string_response
 

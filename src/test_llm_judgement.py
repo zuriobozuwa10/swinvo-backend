@@ -18,6 +18,8 @@ Looking forward to your prompt response.
 Best regards,
 John Smith '''
 
-binary_response = judgement.BinaryJudgement("Is this an email from a customer or potential customer?", test_input)
+#binary_response = judgement.BinaryJudgement("Is this an email from a customer or potential customer?", test_input)
+#print(binary_response)
 
-print(binary_response)
+response = judgement.Task("Extract the key points from this email in only 2 sentences", test_input)
+print(response)
