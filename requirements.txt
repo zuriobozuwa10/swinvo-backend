@@ -5,4 +5,4 @@ gunicorn
 openai
 requests
 pymongo
-yaml
+pyyaml
