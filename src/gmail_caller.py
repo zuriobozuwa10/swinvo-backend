@@ -104,4 +104,3 @@ class GmailCaller:
     profile = self.gmail_service.users().getProfile(userId='me').execute()
     email = profile['emailAddress']
     return email
-
