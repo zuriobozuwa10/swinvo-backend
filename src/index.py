@@ -100,7 +100,9 @@ client_secret = "{os.environ.get('GMAIL_CLIENT_SECRET')}"
     print(full_automation_code)
 
     user_directory = os.path.join('user_workflows', user_id)
-    os.mkdir(user_directory)
+
+    if not os.path.exists(user_directory):
+        os.mkdir(user_directory)
 
     workflow_file_path = os.path.join(user_directory, generate_random_string(8) + ".workflow")
 
