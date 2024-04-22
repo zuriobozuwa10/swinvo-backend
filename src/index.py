@@ -91,7 +91,7 @@ def create_workflow():
     user_directory = os.path.join('user_workflows', user_id)
     os.mkdir(user_directory)
 
-    workflow_file_path = os.path.join(user_directory, generate_random_string(8))
+    workflow_file_path = os.path.join(user_directory, generate_random_string(8) + ".workflow")
 
     with open(workflow_file_path, "w") as workflow_file:
         workflow_file.write(full_automation_code)
