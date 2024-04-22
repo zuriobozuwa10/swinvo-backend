@@ -75,7 +75,7 @@ class GmailCaller:
     except Exception as e:
         print("An error occurred:", e)
 
-  def SendEmail(self, address_to: str, subject: str, text: str):
+  def SendEmail(self, address_to: str, subject: str, text: str) -> bool:
     sender = self.GetEmailAddress()
 
     message = {
