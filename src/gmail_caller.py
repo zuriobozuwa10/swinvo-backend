@@ -14,7 +14,7 @@ def html_to_plain_text(html_content):
     plain_text = soup.get_text()
     return plain_text
 
-
+##unused currently
 def short_time_ago_string() -> str:
     short_time_ago = datetime.datetime.utcnow() - datetime.timedelta(minutes=800)
     short_time_ago_str = short_time_ago.strftime('%Y/%m/%d %H:%M:%S')
@@ -56,12 +56,12 @@ class GmailCaller:
                 print(message)
                 msg = self.gmail_service.users().messages().get(userId='me', id=message['id']).execute()
 
-                # Ignore email if it's older than 15 seconds ago
+                # Ignore email if it's older than 25 seconds ago
                 time_of_email = round(int(msg['internalDate']) / 1000)
                 print(time_of_email)
                 time_now = round(time.time())
                 print(time_now)
-                if (time_now - time_of_email) > 15:
+                if (time_now - time_of_email) > 25:
                     return # nasty but will fix
 
                 payload = msg['payload']
