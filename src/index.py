@@ -71,10 +71,10 @@ def create_workflow():
 from llm_judgement import LlmJudgement
 from gmail_caller import GmailCaller
 
-access_token = {gmail_tokens[0]}
-refresh_token = {gmail_tokens[1]}
-client_id = {os.environ.get('GMAIL_CLIENT_ID')}
-client_secret = {os.environ.get('GMAIL_CLIENT_SECRET')}
+access_token = "{gmail_tokens[0]}"
+refresh_token = "{gmail_tokens[1]}"
+client_id = "{os.environ.get('GMAIL_CLIENT_ID')}"
+client_secret = "{os.environ.get('GMAIL_CLIENT_SECRET')}"
     
     '''
 
