@@ -14,7 +14,7 @@ database = DatabaseAccessor(os.environ.get('MONGO_DB_USER'), os.environ.get('MON
 
 #model = OpenAiModelUser()
 
-intro_path = "intro.txt"
+intro_path = "intro2.txt"
 
 # Store user chat sessions in a dictionary for now. TODO (ZO): Improve this.
 # Resets after every deployment
