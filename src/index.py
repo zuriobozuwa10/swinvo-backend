@@ -68,8 +68,11 @@ def create_workflow():
 
     pre_automation_code = f'''
 
-from ...llm_judgement import LlmJudgement
-from ...gmail_caller import GmailCaller
+import sys
+sys.path.append('../..')
+
+from llm_judgement import LlmJudgement
+from gmail_caller import GmailCaller
 
 access_token = "{gmail_tokens[0]}"
 refresh_token = "{gmail_tokens[1]}"
