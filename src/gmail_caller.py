@@ -5,6 +5,7 @@ import google.auth.transport.requests
 import googleapiclient.discovery
 import base64
 import datetime
+import time
 
 from bs4 import BeautifulSoup
 
@@ -42,9 +43,9 @@ class GmailCaller:
   def CheckForNewEmail(self) -> str: # Currently able to process just one email ( i think )
     try:
         # Get the list of messages
-        print(short_time_ago_string())
+        #print(short_time_ago_string())
         #query = f'after:{short_time_ago_string()}'
-        query = "after:1d"
+        query = "newer_than:1d"
 
         response = self.gmail_service.users().messages().list(userId='me', labelIds=['INBOX'], q=query).execute()
         messages = response.get('messages', [])
@@ -56,8 +57,12 @@ class GmailCaller:
                 msg = self.gmail_service.users().messages().get(userId='me', id=message['id']).execute()
 
                 # Ignore email if it's older than 15 seconds ago
-                
-                
+                time_of_email = round(int(msg['internalDate']) / 1000)
+                print(time_of_email)
+                time_now = round(time.time())
+                print(time_now)
+                if (time_now - time_of_email) > 15:
+                    return # nasty but will fix
 
                 payload = msg['payload']
                 headers = payload.get('headers', [])
