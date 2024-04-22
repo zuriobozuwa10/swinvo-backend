@@ -5,6 +5,8 @@ import os
 
 import yaml
 
+import random, string
+
 from openai_model_user import OpenAiModelUser
 from database_accessor import DatabaseAccessor
 
@@ -25,6 +27,9 @@ state_tokens = {}
 
 # Each token tuple: (access_token, refresh_token)
 gmail_user_tokens = {}
+
+def generate_random_string(length):
+    return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
 
 with open(intro_path, 'r') as file:
     intro = file.read()
@@ -82,6 +87,14 @@ def create_workflow():
     print("FULL: ")
     print("-----------")
     print(full_automation_code)
+
+    user_directory = os.path.join('user_workflows', user_id)
+    os.mkdir(user_directory)
+
+    workflow_file_path = os.path.join(user_directory, generate_random_string(8))
+
+    with open(workflow_file_path, "w") as workflow_file:
+        workflow_file.write(full_automation_code)
 
     return flask.jsonify(apple)
 
