@@ -15,7 +15,7 @@ def html_to_plain_text(html_content):
 
 
 def short_time_ago_string() -> str:
-    short_time_ago = datetime.datetime.utcnow() - datetime.timedelta(seconds=15)
+    short_time_ago = datetime.datetime.utcnow() - datetime.timedelta(minutes=800)
     short_time_ago_str = short_time_ago.strftime('%Y/%m/%d %H:%M:%S')
     return short_time_ago_str
 
@@ -42,7 +42,9 @@ class GmailCaller:
   def CheckForNewEmail(self) -> str: # Currently able to process just one email ( i think )
     try:
         # Get the list of messages
-        query = f'after:{short_time_ago_string()}'
+        print(short_time_ago_string())
+        #query = f'after:{short_time_ago_string()}'
+        query = "after:1d"
 
         response = self.gmail_service.users().messages().list(userId='me', labelIds=['INBOX'], q=query).execute()
         messages = response.get('messages', [])
@@ -52,6 +54,11 @@ class GmailCaller:
             for message in messages:
                 print(message)
                 msg = self.gmail_service.users().messages().get(userId='me', id=message['id']).execute()
+
+                # Ignore email if it's older than 15 seconds ago
+                
+                
+
                 payload = msg['payload']
                 headers = payload.get('headers', [])
                 subject = ""
