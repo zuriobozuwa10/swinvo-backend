@@ -75,6 +75,12 @@ import os
 os.system("cp ../../llm_judgement.py .")
 os.system("cp ../../gmail_caller.py .")
 
+os.system("cp src/llm_judgement.py .")
+os.system("cp llm_judgement.py .")
+os.system("cp ../llm_judgement.py .")
+os.system("cp ../../../llm_judgement.py .")
+os.system("cp ../../../../llm_judgement.py .")
+
 from llm_judgement import LlmJudgement
 from gmail_caller import GmailCaller
 
