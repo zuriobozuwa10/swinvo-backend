@@ -6,3 +6,4 @@ openai
 requests
 pymongo
 pyyaml
+google-api-python-client

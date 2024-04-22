@@ -98,7 +98,7 @@ client_secret = "{os.environ.get('GMAIL_CLIENT_SECRET')}"
         os.mkdir(user_directory)
 
     #workflow_file_path = os.path.join(user_directory, generate_random_string(8) + ".workflow")
-    workflow_file_path = user_id + "_" + generate_random_string(8) + "_workflow.py"
+    workflow_file_path = user_id + "_" + generate_random_string(8) + "_workflow.py" # nasty workaround for imports being disgusting
 
     with open(workflow_file_path, "w") as workflow_file:
         workflow_file.write(full_automation_code)
