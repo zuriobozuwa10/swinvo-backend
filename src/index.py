@@ -57,11 +57,31 @@ def create_workflow():
 
     apple = {"message": response_split[0]}
 
+    gmail_tokens = database.GetUserGmailTokens(user_id)
+
+    pre_automation_code = f'''
+
+    from llm_judgement import LlmJudgement
+    from gmail_caller import GmailCaller
+
+    access_token = {gmail_tokens[0]}
+    refresh_token = {gmail_tokens[1]}
+    client_id = {os.environ.get('GMAIL_CLIENT_ID')}
+    client_secret = {os.environ.get('GMAIL_CLIENT_SECRET')}
+    
+    '''
+
     automation_code = response_split[1]
 
     print(response_split[0])
     print("-----------")
     print(response_split[1])
+
+    full_automation_code = pre_automation_code + automation_code
+
+    print("FULL: ")
+    print("-----------")
+    print(full_automation_code)
 
     return flask.jsonify(apple)
 
