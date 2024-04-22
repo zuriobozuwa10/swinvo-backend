@@ -1,7 +1,9 @@
 from flask import request, redirect
 import flask
 import requests
+
 import os
+import subprocess
 
 import yaml
 
@@ -95,6 +97,8 @@ client_secret = {os.environ.get('GMAIL_CLIENT_SECRET')}
 
     with open(workflow_file_path, "w") as workflow_file:
         workflow_file.write(full_automation_code)
+
+    subprocess.run(["python3", "workflow_runner.py" workflow_file_path])
 
     return flask.jsonify(apple)
 
