@@ -49,11 +49,19 @@ def create_workflow():
 
     model_response = user_chat_sessions[user_id].Use(input_text)
 
-    print(model_response) # debug
+    #print(model_response) # debug
 
     #print(model.GetConvoHistory())
 
-    apple = {"message": model_response}
+    response_split = model_response.split('SPLIT')
+
+    apple = {"message": response_split[0]}
+
+    automation_code = response_split[1]
+
+    print(response_split[0])
+    print("-----------")
+    print(response_split[1])
 
     return flask.jsonify(apple)
 
