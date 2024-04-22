@@ -68,19 +68,6 @@ def create_workflow():
 
     pre_automation_code = f'''
 
-import sys
-sys.path.append('../..')
-
-import os
-os.system("cp ../../llm_judgement.py .")
-os.system("cp ../../gmail_caller.py .")
-
-os.system("cp src/llm_judgement.py .")
-os.system("cp llm_judgement.py .")
-os.system("cp ../llm_judgement.py .")
-os.system("cp ../../../llm_judgement.py .")
-os.system("cp ../../../../llm_judgement.py .")
-
 from llm_judgement import LlmJudgement
 from gmail_caller import GmailCaller
 
@@ -110,7 +97,8 @@ client_secret = "{os.environ.get('GMAIL_CLIENT_SECRET')}"
     if not os.path.exists(user_directory):
         os.mkdir(user_directory)
 
-    workflow_file_path = os.path.join(user_directory, generate_random_string(8) + ".workflow")
+    #workflow_file_path = os.path.join(user_directory, generate_random_string(8) + ".workflow")
+    workflow_file_path = user_id + "_" + generate_random_string(8) + "_workflow.py"
 
     with open(workflow_file_path, "w") as workflow_file:
         workflow_file.write(full_automation_code)
