@@ -9,7 +9,7 @@ def run(workflow_file_path):
 
 while True:
   run(sys.argv[1])
-  time.sleep(30)
+  time.sleep(15)
 
 
   

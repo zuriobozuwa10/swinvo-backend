@@ -4,6 +4,7 @@ import google.oauth2.credentials
 import google.auth.transport.requests
 import googleapiclient.discovery
 import base64
+import datetime
 
 from bs4 import BeautifulSoup
 
@@ -11,6 +12,12 @@ def html_to_plain_text(html_content):
     soup = BeautifulSoup(html_content, 'html.parser')
     plain_text = soup.get_text()
     return plain_text
+
+
+def short_time_ago_string() -> str:
+    short_time_ago = datetime.datetime.utcnow() - datetime.timedelta(seconds=15)
+    short_time_ago_str = short_time_ago.strftime('%Y/%m/%d %H:%M:%S')
+    return short_time_ago_str
 
 class GmailCaller:
   def __init__(self, access_token: str, refresh_token: str, client_id: str, client_secret: str):
@@ -35,7 +42,9 @@ class GmailCaller:
   def CheckForNewEmail(self) -> str: # Currently able to process just one email ( i think )
     try:
         # Get the list of messages
-        response = self.gmail_service.users().messages().list(userId='me', labelIds=['INBOX'], q='is:unread').execute()
+        query = f'after:{short_time_ago_string()}'
+
+        response = self.gmail_service.users().messages().list(userId='me', labelIds=['INBOX'], q=query).execute()
         messages = response.get('messages', [])
 
         if messages:
