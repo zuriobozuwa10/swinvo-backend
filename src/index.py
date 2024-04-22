@@ -68,6 +68,8 @@ def create_workflow():
 
     pre_automation_code = f'''
 
+import sys
+sys.path.append('../..')
 from llm_judgement import LlmJudgement
 from gmail_caller import GmailCaller
 
