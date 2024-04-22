@@ -71,6 +71,10 @@ def create_workflow():
 import sys
 sys.path.append('../..')
 
+import os
+os.system("cp ../../llm_judgement.py .")
+os.system("cp ../../gmail_caller.py .")
+
 from llm_judgement import LlmJudgement
 from gmail_caller import GmailCaller
 
@@ -102,7 +106,7 @@ client_secret = "{os.environ.get('GMAIL_CLIENT_SECRET')}"
 
     with open(workflow_file_path, "w") as workflow_file:
         workflow_file.write(full_automation_code)
-
+    
     subprocess.run(["python3", "workflow_runner.py", workflow_file_path])
 
     return flask.jsonify(apple)
