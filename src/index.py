@@ -81,7 +81,9 @@ client_secret = "{os.environ.get('GMAIL_CLIENT_SECRET')}"
     
     '''
 
-    automation_code = response_split[1]
+    automation_code_with_delim = response_split[1]
+
+    automation_code = automation_code_with_delim.split('END')[0]
 
     print(response_split[0])
     print("-----------")
