@@ -121,7 +121,7 @@ def run_workflow():
     # save workflow then run workflow
     pass
 
-@app.route("list-workflows")
+@app.route("/list-workflows")
 def list_workflows():
     # list user's workflows
     pass
