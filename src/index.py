@@ -36,6 +36,9 @@ def generate_random_string(length):
 with open(intro_path, 'r') as file:
     intro = file.read()
 
+# Save workflow
+
+
 @app.route("/")
 def hello_world():
     return "Hellooooo2"
@@ -60,9 +63,10 @@ def create_workflow():
 
     #print(model.GetConvoHistory())
 
-    response_split = model_response.split('SPLIT')
+    response_array = model_response.split('SPLIT')
+    print(response_array)
 
-    apple = {"message": response_split[0]}
+    apple = {"message": response_array[0]}
 
     gmail_tokens = database.GetUserGmailTokens(user_id)
 
@@ -78,17 +82,17 @@ client_secret = "{os.environ.get('GMAIL_CLIENT_SECRET')}"
     
     '''
 
-    automation_code_with_delim = response_split[1]
+    workflow_name = response_array[1].strip() # strip removes whitespace
+    apple["workflow_name"] = workflow_name
 
-    automation_code = automation_code_with_delim.split('END')[0]
+    exec(response_array[2]) # workflow_steps var defined here
+    apple["steps"] = workflow_steps
 
-    print(response_split[0])
-    print("-----------")
-    print(response_split[1])
+    automation_code = response_array[3]
 
     full_automation_code = pre_automation_code + automation_code
 
-    print("FULL: ")
+    print("FULL AUTOMATION CODE: ")
     print("-----------")
     print(full_automation_code)
 
@@ -107,6 +111,20 @@ client_secret = "{os.environ.get('GMAIL_CLIENT_SECRET')}"
 
     return flask.jsonify(apple)
 
+@app.route("/save-workflow-for-later", methods = ['POST'])
+def save_workflow_for_later():
+    # save workflow
+    pass
+
+@app.route("/run-workflow")
+def run_workflow():
+    # save workflow then run workflow
+    pass
+
+@app.route("list-workflows")
+def list_workflows():
+    # list user's workflows
+    pass
 
 @app.route("/check-gmail-auth", methods = ['POST'])
 def check_gmail_auth():
