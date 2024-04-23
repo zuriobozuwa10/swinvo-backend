@@ -51,17 +51,17 @@ class GmailCaller:
         messages = response.get('messages', [])
 
         if messages:
-            print("New messages received:")
+            #print("New messages received:")
             for message in messages:
-                print(message)
+                #print(message)
                 msg = self.gmail_service.users().messages().get(userId='me', id=message['id']).execute()
 
-                # Ignore email if it's older than 25 seconds ago
+                # Ignore email if it's older than 30 seconds ago
                 time_of_email = round(int(msg['internalDate']) / 1000)
-                print(time_of_email)
+                #print(time_of_email)
                 time_now = round(time.time())
-                print(time_now)
-                if (time_now - time_of_email) > 25:
+                #print(time_now)
+                if (time_now - time_of_email) > 30:
                     return # nasty but will fix
 
                 payload = msg['payload']
