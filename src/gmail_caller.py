@@ -51,7 +51,7 @@ class GmailCaller:
         messages = response.get('messages', [])
 
         if messages:
-            #print("New messages received:")
+            ##print("New messages received:")
             for message in messages:
                 #print(message)
                 msg = self.gmail_service.users().messages().get(userId='me', id=message['id']).execute()
