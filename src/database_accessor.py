@@ -2,7 +2,7 @@ import pymongo
 
 class DatabaseAccessor:
   def __init__(self, username: str, password: str):
-    self.connection_string = f"mongodb+srv://{username}:{password}@cluster0.ifrrpwr.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+    self.connection_string = f"mongodb+srv://{username}:{password}@swinvocluster0.pbydvg1.mongodb.net/?retryWrites=true&w=majority&appName=SwinvoCluster0"
     self.client = client = pymongo.MongoClient(self.connection_string)
 
     try:
