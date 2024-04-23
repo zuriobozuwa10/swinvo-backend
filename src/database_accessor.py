@@ -52,8 +52,8 @@ class DatabaseAccessor:
     user_workflows_collection = database["user-workflows"]
 
     user_workflow_document = {
-      "auth0_user_id": user_id
-      "worklow_display_name": workflow_name
+      "auth0_user_id": user_id,
+      "worklow_display_name": workflow_name,
       "automation_code": automation_code
     }
 
