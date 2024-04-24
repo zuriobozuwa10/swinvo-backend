@@ -1,4 +1,4 @@
-from flask import request, redirect
+from flask import request, redirect, session
 import flask
 import requests
 
