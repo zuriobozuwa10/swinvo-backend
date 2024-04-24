@@ -64,7 +64,11 @@ def create_workflow():
     #print(model.GetConvoHistory())
 
     response_array = model_response.split('SPLIT')
+
+    # Dbg
     print(response_array)
+    for entry in response_array:
+        print(entry)
 
     apple = {"message": response_array[0]}
 
@@ -85,7 +89,7 @@ client_secret = "{os.environ.get('GMAIL_CLIENT_SECRET')}"
     workflow_name = response_array[1].strip() # strip removes whitespace
     apple["workflow_name"] = workflow_name
 
-    exec(response_array[2]) # workflow_steps var defined here
+    workflow_steps = response_array[2].split(",")
     apple["steps"] = workflow_steps
 
     automation_code = response_array[3]
