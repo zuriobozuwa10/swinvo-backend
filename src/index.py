@@ -126,7 +126,7 @@ def save_workflow_for_later():
     # save workflow
     pass
 
-@app.route("/run-workflow")
+@app.route("/run-workflow", methods = ['POST'])
 def run_workflow():
     user_directory = os.path.join('user_workflows', session["user_id"])
 
