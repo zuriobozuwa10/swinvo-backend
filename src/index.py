@@ -111,18 +111,13 @@ client_secret = "{os.environ.get('GMAIL_CLIENT_SECRET')}"
     print("-----------")
     print(full_automation_code)
 
-    user_directory = os.path.join('user_workflows', user_id)
+    #### SESSION
+    session['current_workflow_name'] = workflow_name
+    session['current_workflow_steps'] = workflow_steps
+    session['current_workflow_automation_code'] = automation_code
+    session['current_workflow_full_automation_code'] = full_automation_code
 
-    if not os.path.exists(user_directory):
-        os.mkdir(user_directory)
-
-    #workflow_file_path = os.path.join(user_directory, generate_random_string(8) + ".workflow")
-    workflow_file_path = user_id + "_" + generate_random_string(8) + "_workflow.py" # nasty workaround for imports being disgusting
-
-    with open(workflow_file_path, "w") as workflow_file:
-        workflow_file.write(full_automation_code)
-    
-    subprocess.Popen(["python3", "workflow_runner.py", workflow_file_path])
+    session['user_id'] = user_id
 
     return flask.jsonify(apple)
 
@@ -133,8 +128,21 @@ def save_workflow_for_later():
 
 @app.route("/run-workflow")
 def run_workflow():
-    # save workflow then run workflow
-    pass
+    user_directory = os.path.join('user_workflows', session["user_id"])
+
+    if not os.path.exists(user_directory):
+        os.mkdir(user_directory)
+
+    #workflow_file_path = os.path.join(user_directory, generate_random_string(8) + ".workflow")
+    workflow_file_path = user_id + "_" + generate_random_string(8) + "_workflow.py" # nasty workaround for imports being disgusting
+
+    with open(workflow_file_path, "w") as workflow_file:
+        workflow_file.write(session["full_automation_code"])
+    
+    subprocess.Popen(["python3", "workflow_runner.py", workflow_file_path])
+
+    print("WORKFLOW RUNNING: " + workflow_file_path)
+    return ''
 
 @app.route("/list-workflows")
 def list_workflows():
