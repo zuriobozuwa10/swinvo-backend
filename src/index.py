@@ -142,7 +142,7 @@ def run_workflow():
     subprocess.Popen(["python3", "workflow_runner.py", workflow_file_path])
 
     print("WORKFLOW RUNNING: " + workflow_file_path)
-    return "workflow running successfully"
+    return {"message": "workflow running successfully"}
 
 @app.route("/list-workflows")
 def list_workflows():
