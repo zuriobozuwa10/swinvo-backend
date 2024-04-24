@@ -14,6 +14,8 @@ from database_accessor import DatabaseAccessor
 
 app = flask.Flask(__name__)
 
+app.secret_key = 'iu4g87g23bi329032hr23'
+
 database = DatabaseAccessor(os.environ.get('MONGO_DB_USER'), os.environ.get('MONGO_DB_PASSWORD'))
 
 #model = OpenAiModelUser()
@@ -42,6 +44,15 @@ with open(intro_path, 'r') as file:
 @app.route("/")
 def hello_world():
     return "Hellooooo2"
+
+@app.route("/test-session")
+def test_session():
+    if 'visits' in session:
+        session['visits'] = session.get('visits') + 1  # Increment the number of visits
+    else:
+        session['visits'] = 1  # Start counting from 1
+    print(f'Number of visits: {session["visits"]}')
+    return f'Number of visits: {session["visits"]}'
 
 @app.route("/create-workflow", methods = ['POST'])
 def create_workflow():
