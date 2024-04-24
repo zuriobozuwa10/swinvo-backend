@@ -15,6 +15,7 @@ from database_accessor import DatabaseAccessor
 app = flask.Flask(__name__)
 
 app.secret_key = 'iu4g87g23bi329032hr23'
+app.config.update(SESSION_COOKIE_SAMESITE="None", SESSION_COOKIE_SECURE=True) # Session for different routes ???
 
 database = DatabaseAccessor(os.environ.get('MONGO_DB_USER'), os.environ.get('MONGO_DB_PASSWORD'))
 
