@@ -9,6 +9,8 @@ import yaml
 
 from cryptography.fernet import Fernet
 
+import base64
+
 import random, string
 
 from openai_model_user import OpenAiModelUser
