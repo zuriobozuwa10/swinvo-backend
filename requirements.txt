@@ -8,4 +8,4 @@ pymongo
 pyyaml
 google-api-python-client
 beautifulsoup4
-Flask-Session
+cryptography

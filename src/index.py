@@ -1,4 +1,4 @@
-from flask import request, redirect, session
+from flask import request, redirect
 import flask
 import requests
 
@@ -7,6 +7,8 @@ import subprocess
 
 import yaml
 
+from cryptography.fernet import Fernet
+
 import random, string
 
 from openai_model_user import OpenAiModelUser
@@ -14,11 +16,12 @@ from database_accessor import DatabaseAccessor
 
 app = flask.Flask(__name__)
 
-app.secret_key = "3g8fg83fg823fyu2g98i"
-
 database = DatabaseAccessor(os.environ.get('MONGO_DB_USER'), os.environ.get('MONGO_DB_PASSWORD'))
 
 #model = OpenAiModelUser()
+
+# create session from scratch because flask is a cunt
+session = {}
 
 intro_path = "intro2.txt"
 
@@ -35,21 +38,24 @@ gmail_user_tokens = {}
 def generate_random_string(length):
     return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
 
+def encrypt_message(message):
+    ## Encrypts a message with fernet
+    key = os.environ.get('FERNET_KEY')
+    f = Fernet(key)
+    encrypted_message = f.encrypt(message.encode())
+    return encrypted_message
+
+def decrypt_message(encrypted_message):
+    ## Decrypts a message with fernet
+    key = os.environ.get('FERNET_KEY')
+    f = Fernet(key)
+    decrypted_message = f.decrypt(encrypted_message).decode()
+    return decrypted_message
+
 with open(intro_path, 'r') as file:
     intro = file.read()
 
 # Save workflow
-
-
-# test session
-@app.route("/test-session")
-def test_session():
-    if 'visits' in session:
-        session['visits'] = session.get('visits') + 1  # Increment the number of visits
-    else:
-        session['visits'] = 1  # Start counting from 1
-    print(f'Number of visits: {session["visits"]}')
-    return f'Number of visits: {session["visits"]}'
 
 @app.route("/")
 def hello_world():
@@ -117,17 +123,29 @@ client_secret = "{os.environ.get('GMAIL_CLIENT_SECRET')}"
         print(full_automation_code)
 
         #### SESSION
-        session['current_workflow_name'] = workflow_name
-        session['current_workflow_steps'] = workflow_steps
-        session['current_workflow_automation_code'] = automation_code
-        session['current_workflow_full_automation_code'] = full_automation_code
 
-        session['user_id'] = user_id
+        # create session for this workflow we've made
+
+        user_temp_data = {}
+        user_temp_data['current_workflow_name'] = workflow_name
+        user_temp_data['current_workflow_steps'] = workflow_steps
+        user_temp_data['current_workflow_automation_code'] = automation_code
+        user_temp_data['current_workflow_full_automation_code'] = full_automation_code
+        user_temp_data['user_id'] = user_id
+
+        session_id = generate_random_string(10)
+        session[session_id] = user_temp_data
+
+        apple["session_id"] = encrypt_message(session_id)
 
         return flask.jsonify(apple)
     
     elif workflow_action == "run":
-        user_directory = os.path.join('user_workflows', session["user_id"])
+        session_id = decrypt_message(request.json['session_id'])
+
+        user_temp_data = session[session_id]
+        
+        user_directory = os.path.join('user_workflows', user_temp_data["user_id"])
 
         if not os.path.exists(user_directory):
             os.mkdir(user_directory)
