@@ -62,6 +62,19 @@ class DatabaseAccessor:
     
     return insert_result
 
+  def GetUserWorkflows(self, user_id: str) -> list:
+    database = self.client["swinvo-database"]
+    user_workflows_collection = database["user-workflows"]
+
+    user_workflows_documents_cursor = user_workflows_collection.find({"auth0_user_id": user_id})
+
+    user_workflows_documents_list = []
+
+    for doc in user_workflows_documents_cursor:
+      user_workflows_documents_list.append(doc)
+    
+    return user_workflows_documents_list
+
 
 
     

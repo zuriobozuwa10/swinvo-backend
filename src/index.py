@@ -174,11 +174,13 @@ client_secret = "{os.environ.get('GMAIL_CLIENT_SECRET')}"
         
         return {"message": "workflow saved successfully"}
 
+# superseded currently
 @app.route("/save-workflow-for-later", methods = ['POST'])
 def save_workflow_for_later():
     # save workflow
     pass
 
+# superseded currently
 @app.route("/run-workflow", methods = ['POST'])
 def run_workflow():
     user_directory = os.path.join('user_workflows', session["user_id"])
@@ -197,10 +199,24 @@ def run_workflow():
     print("WORKFLOW RUNNING: " + workflow_file_path)
     return {"message": "workflow running successfully"}
 
-@app.route("/list-workflows")
+@app.route("/list-workflows", methods = ['POST'])
 def list_workflows():
     # list user's workflows
-    pass
+    user_id = request.json['uid']
+
+    user_workflows_document_list = database.GetUserWorkflows(user_id)
+
+    workflows_list = []
+
+    for doc in user_workflows_document_list:
+        workflow = {}
+        workflow["workflow_name"] = doc["workflow_name"]
+        workflow["workflow_steps"] = doc["workflow_steps"]
+        # TODO: could return automation code in future
+        # TODO: we have to return something that can help us pause the workflow
+        workflows_list.append(workflow)
+
+    return flask.jsonify({"workflows": workflows_list})
 
 @app.route("/check-gmail-auth", methods = ['POST'])
 def check_gmail_auth():
