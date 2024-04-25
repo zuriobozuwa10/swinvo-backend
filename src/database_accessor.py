@@ -47,13 +47,14 @@ class DatabaseAccessor:
 
     return tokens
 
-  def SaveUserWorkflow(self, user_id: str, automation_code: str, workflow_name: str):
+  def SaveUserWorkflow(self, user_id: str, workflow_name: str, workflow_steps: [str], automation_code: str):
     database = self.client["swinvo-database"]
     user_workflows_collection = database["user-workflows"]
 
     user_workflow_document = {
       "auth0_user_id": user_id,
-      "worklow_display_name": workflow_name,
+      "workflow_name": workflow_name,
+      "workflow_steps": workflow_steps,
       "automation_code": automation_code
     }
 
