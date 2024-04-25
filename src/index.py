@@ -15,8 +15,6 @@ from openai_model_user import OpenAiModelUser
 from database_accessor import DatabaseAccessor
 
 app = flask.Flask(__name__)
-
-app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
 #app.secret_key = 'iu4g87g23bi329032hr23'
