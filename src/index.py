@@ -2,8 +2,6 @@ from flask import request, redirect, session
 import flask
 import requests
 
-#from flask_session import Session
-
 import os
 import subprocess
 
@@ -16,20 +14,7 @@ from database_accessor import DatabaseAccessor
 
 app = flask.Flask(__name__)
 
-#app.config["SESSION_TYPE"] = "filesystem"
-#Session(app)
-
-app.secret_key = 'iu4g87g23bi329032hr23'
-#app.config.update(SESSION_COOKIE_SAMESITE="None", SESSION_COOKIE_SECURE=True) # Session for different routes ???
-
-@app.before_request
-def make_session_permanent():
-    session.permanent = True
-    app.config.update(
-        SESSION_COOKIE_SECURE=True,
-        SESSION_COOKIE_HTTPONLY=True,
-        SESSION_COOKIE_SAMESITE='Lax',
-    )
+app.secret_key = "3g8fg83fg823fyu2g98i"
 
 database = DatabaseAccessor(os.environ.get('MONGO_DB_USER'), os.environ.get('MONGO_DB_PASSWORD'))
 
@@ -60,47 +45,42 @@ with open(intro_path, 'r') as file:
 def hello_world():
     return "Hellooooo2"
 
-@app.route("/test-session")
-def test_session():
-    if 'visits' in session:
-        session['visits'] = session.get('visits') + 1  # Increment the number of visits
-    else:
-        session['visits'] = 1  # Start counting from 1
-    print(f'Number of visits: {session["visits"]}')
-    return f'Number of visits: {session["visits"]}'
+@app.route("/workflow-action", methods = ['POST'])
+def workflow_action():
 
-@app.route("/create-workflow", methods = ['POST'])
-def create_workflow():
+    workflow_action = request.json['workflow_action']
 
-    print(user_chat_sessions)
+    if workflow_action == "create" or workflow_action == None or workflow_action == "":
 
-    user_id = request.json['uid']
+        print(user_chat_sessions)
 
-    if user_id not in user_chat_sessions:
-        user_model = OpenAiModelUser()
-        user_model.Use(intro)
-        user_chat_sessions[user_id] = user_model
+        user_id = request.json['uid']
 
-    input_text = request.json['text']
+        if user_id not in user_chat_sessions:
+            user_model = OpenAiModelUser()
+            user_model.Use(intro)
+            user_chat_sessions[user_id] = user_model
 
-    model_response = user_chat_sessions[user_id].Use(input_text)
+        input_text = request.json['text']
 
-    #print(model_response) # debug
+        model_response = user_chat_sessions[user_id].Use(input_text)
 
-    #print(model.GetConvoHistory())
+        #print(model_response) # debug
 
-    response_array = model_response.split('SPLIT')
+        #print(model.GetConvoHistory())
 
-    # Dbg
-    print(response_array)
-    for entry in response_array:
-        print(entry)
+        response_array = model_response.split('SPLIT')
 
-    apple = {"message": response_array[0]}
+        # Dbg
+        print(response_array)
+        for entry in response_array:
+            print(entry)
 
-    gmail_tokens = database.GetUserGmailTokens(user_id)
+        apple = {"message": response_array[0]}
 
-    pre_automation_code = f'''
+        gmail_tokens = database.GetUserGmailTokens(user_id)
+
+        pre_automation_code = f'''
 
 from llm_judgement import LlmJudgement
 from gmail_caller import GmailCaller
@@ -109,32 +89,52 @@ access_token = "{gmail_tokens[0]}"
 refresh_token = "{gmail_tokens[1]}"
 client_id = "{os.environ.get('GMAIL_CLIENT_ID')}"
 client_secret = "{os.environ.get('GMAIL_CLIENT_SECRET')}"
+        
+        '''
+
+        workflow_name = response_array[1].strip() # strip removes whitespace
+        apple["workflow_name"] = workflow_name
+
+        workflow_steps = response_array[2].split(",")
+        apple["steps"] = workflow_steps
+
+        automation_code = response_array[3]
+
+        full_automation_code = pre_automation_code + automation_code
+
+        print("FULL AUTOMATION CODE: ")
+        print("-----------")
+        print(full_automation_code)
+
+        #### SESSION
+        session['current_workflow_name'] = workflow_name
+        session['current_workflow_steps'] = workflow_steps
+        session['current_workflow_automation_code'] = automation_code
+        session['current_workflow_full_automation_code'] = full_automation_code
+
+        session['user_id'] = user_id
+
+        return flask.jsonify(apple)
     
-    '''
+    elif workflow_action == "run":
+        user_directory = os.path.join('user_workflows', session["user_id"])
 
-    workflow_name = response_array[1].strip() # strip removes whitespace
-    apple["workflow_name"] = workflow_name
+        if not os.path.exists(user_directory):
+            os.mkdir(user_directory)
 
-    workflow_steps = response_array[2].split(",")
-    apple["steps"] = workflow_steps
+        #workflow_file_path = os.path.join(user_directory, generate_random_string(8) + ".workflow")
+        workflow_file_path = user_id + "_" + generate_random_string(8) + "_workflow.py" # nasty workaround for imports being disgusting
 
-    automation_code = response_array[3]
+        with open(workflow_file_path, "w") as workflow_file:
+            workflow_file.write(session["full_automation_code"])
+        
+        subprocess.Popen(["python3", "workflow_runner.py", workflow_file_path])
 
-    full_automation_code = pre_automation_code + automation_code
+        print("WORKFLOW RUNNING: " + workflow_file_path)
+        return {"message": "workflow running successfully"}
 
-    print("FULL AUTOMATION CODE: ")
-    print("-----------")
-    print(full_automation_code)
-
-    #### SESSION
-    session['current_workflow_name'] = workflow_name
-    session['current_workflow_steps'] = workflow_steps
-    session['current_workflow_automation_code'] = automation_code
-    session['current_workflow_full_automation_code'] = full_automation_code
-
-    session['user_id'] = user_id
-
-    return flask.jsonify(apple)
+    elif workflow_action == "save":
+        pass
 
 @app.route("/save-workflow-for-later", methods = ['POST'])
 def save_workflow_for_later():
