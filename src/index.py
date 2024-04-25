@@ -156,7 +156,7 @@ client_secret = "{os.environ.get('GMAIL_CLIENT_SECRET')}"
         workflow_file_path = user_temp_data["user_id"] + "_" + generate_random_string(8) + "_workflow.py" # nasty workaround for imports being disgusting
 
         with open(workflow_file_path, "w") as workflow_file:
-            workflow_file.write(user_temp_data["full_automation_code"])
+            workflow_file.write(user_temp_data["current_workflow_full_automation_code"])
         
         subprocess.Popen(["python3", "workflow_runner.py", workflow_file_path])
 
