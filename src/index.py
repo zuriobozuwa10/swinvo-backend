@@ -43,13 +43,13 @@ def encrypt_message(message):
     key = os.environ.get('FERNET_KEY')
     f = Fernet(key)
     encrypted_message = f.encrypt(message.encode())
-    return encrypted_message
+    return base64.urlsafe_b64encode(encrypted_message).decode()
 
 def decrypt_message(encrypted_message):
     ## Decrypts a message with fernet
     key = os.environ.get('FERNET_KEY')
     f = Fernet(key)
-    decrypted_message = f.decrypt(encrypted_message).decode()
+    decrypted_message = f.decrypt(base64.urlsafe_b64decode(encrypted_message)).decode()
     return decrypted_message
 
 with open(intro_path, 'r') as file:
