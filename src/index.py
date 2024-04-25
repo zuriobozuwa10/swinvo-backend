@@ -161,10 +161,18 @@ client_secret = "{os.environ.get('GMAIL_CLIENT_SECRET')}"
         subprocess.Popen(["python3", "workflow_runner.py", workflow_file_path])
 
         print("WORKFLOW RUNNING: " + workflow_file_path)
+
+        database.SaveUserWorkflow(user_temp_data['user_id'], user_temp_data['current_workflow_name'], user_temp_data['current_workflow_steps'], user_temp_data['current_workflow_automation_code'] )
+        
         return {"message": "workflow running successfully"}
 
     elif workflow_action == "save":
-        pass
+        session_id = decrypt_message(request.json['session_id'])
+        user_temp_data = session[session_id]
+
+        database.SaveUserWorkflow(user_temp_data['user_id'], user_temp_data['current_workflow_name'], user_temp_data['current_workflow_steps'], user_temp_data['current_workflow_automation_code'] )
+        
+        return {"message": "workflow saved successfully"}
 
 @app.route("/save-workflow-for-later", methods = ['POST'])
 def save_workflow_for_later():
