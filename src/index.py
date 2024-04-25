@@ -41,6 +41,16 @@ with open(intro_path, 'r') as file:
 # Save workflow
 
 
+# test session
+@app.route("/test-session")
+def test_session():
+    if 'visits' in session:
+        session['visits'] = session.get('visits') + 1  # Increment the number of visits
+    else:
+        session['visits'] = 1  # Start counting from 1
+    print(f'Number of visits: {session["visits"]}')
+    return f'Number of visits: {session["visits"]}'
+
 @app.route("/")
 def hello_world():
     return "Hellooooo2"
