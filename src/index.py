@@ -2,6 +2,8 @@ from flask import request, redirect, session
 import flask
 import requests
 
+from flask.ext.session import Session
+
 import os
 import subprocess
 
@@ -13,9 +15,10 @@ from openai_model_user import OpenAiModelUser
 from database_accessor import DatabaseAccessor
 
 app = flask.Flask(__name__)
+Session(app)
 
-app.secret_key = 'iu4g87g23bi329032hr23'
-app.config.update(SESSION_COOKIE_SAMESITE="None", SESSION_COOKIE_SECURE=True) # Session for different routes ???
+#app.secret_key = 'iu4g87g23bi329032hr23'
+#app.config.update(SESSION_COOKIE_SAMESITE="None", SESSION_COOKIE_SECURE=True) # Session for different routes ???
 
 database = DatabaseAccessor(os.environ.get('MONGO_DB_USER'), os.environ.get('MONGO_DB_PASSWORD'))
 
