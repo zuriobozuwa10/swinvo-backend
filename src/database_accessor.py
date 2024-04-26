@@ -72,6 +72,7 @@ class DatabaseAccessor:
 
     for doc in user_workflows_documents_cursor:
       user_workflows_documents_list.append(doc)
+      print(doc) # debug
     
     return user_workflows_documents_list
 
