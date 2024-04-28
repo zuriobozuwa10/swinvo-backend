@@ -96,6 +96,9 @@ def workflow_action():
 
         apple = {"message": response_array[0]}
 
+        if len(response_array) == 0:
+            return flask.jsonify(apple)  ## Return just a continuation of the convo if response does not have an automation
+
         gmail_tokens = database.GetUserGmailTokens(user_id)
 
         pre_automation_code = f'''
