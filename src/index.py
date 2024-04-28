@@ -212,11 +212,24 @@ def list_workflows():
         workflow = {}
         workflow["workflow_name"] = doc["workflow_name"]
         workflow["workflow_steps"] = doc["workflow_steps"]
+        workflow["workflow_id"] = str(doc["_id"])
         # TODO: could return automation code in future
         # TODO: we have to return something that can help us pause the workflow
         workflows_list.append(workflow)
 
     return flask.jsonify({"workflows": workflows_list})
+
+@app.route("/delete-workflow", methods = ['POST'])
+def delete_workflow():
+    # list user's workflows
+    user_id = request.json['uid']
+
+    workflow_id_string = request.json['workflow_id']
+
+    if database.DeleteUserWorkflow(workflow_id_string):
+        return {"message": "workflow deleted successfully"}
+    else:
+        return flask.make_response('failed to delete workflow', 400)
 
 @app.route("/check-gmail-auth", methods = ['POST'])
 def check_gmail_auth():

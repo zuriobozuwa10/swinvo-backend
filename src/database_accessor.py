@@ -1,5 +1,7 @@
 import pymongo
 
+from bson import ObjectId
+
 class DatabaseAccessor:
   def __init__(self, username: str, password: str):
     self.connection_string = f"mongodb+srv://{username}:{password}@swinvocluster0.pbydvg1.mongodb.net/?retryWrites=true&w=majority&appName=SwinvoCluster0"
@@ -72,9 +74,22 @@ class DatabaseAccessor:
 
     for doc in user_workflows_documents_cursor:
       user_workflows_documents_list.append(doc)
-      print(doc) # debug
+      #print(doc) # debug
     
     return user_workflows_documents_list
+
+  def DeleteUserWorkflow(self, mongo_obj_id_string: str) -> bool:
+    database = self.client["swinvo-database"]
+    user_workflows_collection = database["user-workflows"]
+
+    obj_id = ObjectId(mongo_obj_id_string)
+
+    result = user_workflows_collection.delete_one({"_id": obj_id})
+
+    if result.deleted_count == 1:
+      return True
+    else:
+      return False
 
 
 
