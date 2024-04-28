@@ -221,9 +221,6 @@ def list_workflows():
 
 @app.route("/delete-workflow", methods = ['POST'])
 def delete_workflow():
-    # list user's workflows
-    user_id = request.json['uid']
-
     workflow_id_string = request.json['workflow_id']
 
     if database.DeleteUserWorkflow(workflow_id_string):
