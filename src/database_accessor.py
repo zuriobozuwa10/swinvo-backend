@@ -49,7 +49,7 @@ class DatabaseAccessor:
 
     return tokens
 
-  def SaveUserWorkflow(self, user_id: str, workflow_name: str, workflow_steps: [str], automation_code: str):
+  def SaveUserWorkflow(self, user_id: str, workflow_name: str, workflow_steps: [str], automation_code: str, on: bool) -> str: # returns id of inserted workflow document
     database = self.client["swinvo-database"]
     user_workflows_collection = database["user-workflows"]
 
@@ -57,12 +57,13 @@ class DatabaseAccessor:
       "auth0_user_id": user_id,
       "workflow_name": workflow_name,
       "workflow_steps": workflow_steps,
-      "automation_code": automation_code
+      "automation_code": automation_code,
+      "on": 1 if on else 0
     }
 
-    insert_result = user_workflows_collection.insert_one(user_workflow_document)
+    result = user_workflows_collection.insert_one(user_workflow_document)
     
-    return insert_result
+    return str(result.inserted_id)
 
   def GetUserWorkflows(self, user_id: str) -> list:
     database = self.client["swinvo-database"]
@@ -78,6 +79,64 @@ class DatabaseAccessor:
     
     return user_workflows_documents_list
 
+  def GetAllWorkflows(self) -> list:
+    database = self.client["swinvo-database"]
+    user_workflows_collection = database["user-workflows"]
+
+    all_workflows_documents_cursor = user_workflows_collection.find()
+
+    all_workflows_documents_list = []
+
+    for doc in all_workflows_documents_cursor:
+      all_workflows_documents_list.append(doc)
+      #print(doc) # debug
+    
+    return all_workflows_documents_list
+
+  def GetWorkflowById(self, mongo_obj_id_string) -> dict:
+    database = self.client["swinvo-database"]
+    user_workflows_collection = database["user-workflows"]
+
+    obj_id = ObjectId(mongo_obj_id_string)
+
+    workflow_doc = user_workflows_collection.find_one({"_id": obj_id})
+
+    return workflow_doc
+
+  def CheckIfWorkflowIsOnById(self, mongo_obj_id_string) -> bool:
+    database = self.client["swinvo-database"]
+    user_workflows_collection = database["user-workflows"]
+
+    obj_id = ObjectId(mongo_obj_id_string)
+
+    workflow_doc = user_workflows_collection.find_one({"_id": obj_id})
+
+    if workflow_doc['on'] == 1:
+      return True
+    else:
+      return False
+
+  def PauseOrUnpauseUserWorkflow(self, mongo_obj_id_string: str) -> bool:
+    database = self.client["swinvo-database"]
+    user_workflows_collection = database["user-workflows"]
+
+    obj_id = ObjectId(mongo_obj_id_string)
+
+    query = {"_id": obj_id}
+
+    if workflow_document['on'] == 1:
+      update_data = {'$set': {'on': 0}}  # pause workflow
+
+    else:
+      update_data = {'$set': {'on': 1}}  # turn on workflow
+
+    update_result = collection.update_one(query, update_data)
+
+    if update_result.matched_count == 1:
+      return True
+    else:
+      return False
+
   def DeleteUserWorkflow(self, mongo_obj_id_string: str) -> bool:
     database = self.client["swinvo-database"]
     user_workflows_collection = database["user-workflows"]
@@ -92,7 +151,3 @@ class DatabaseAccessor:
       return False
 
 
-
-    
-
-  

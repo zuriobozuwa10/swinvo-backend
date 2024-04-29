@@ -57,7 +57,51 @@ def decrypt_message(encrypted_message):
 with open(intro_path, 'r') as file:
     intro = file.read()
 
-# Save workflow
+# Big stuff under here
+
+def get_pre_automation_code(gmail_access_token: str, gmail_refresh_token: str):
+    code = f'''
+
+from llm_judgement import LlmJudgement
+from gmail_caller import GmailCaller
+
+access_token = "{gmail_access_token}"
+refresh_token = "{gmail_refresh_token}"
+client_id = "{os.environ.get('GMAIL_CLIENT_ID')}"
+client_secret = "{os.environ.get('GMAIL_CLIENT_SECRET')}"
+        
+        '''
+
+    return code
+
+def RunWorkflow(workflow_id: str):
+    workflow_doc = database.GetWorkflowById(workflow_id)
+
+    user_id = workflow_doc["auth0_user_id"]
+
+    gmail_tokens = database.GetUserGmailTokens(user_id)
+
+    workflow_file_path = user_id + "_" + generate_random_string(8) + "_workflow.py" # nasty workaround for imports being disgusting
+
+    pre_automation_code = get_pre_automation_code(gmail_tokens[0], gmail_tokens[1])
+
+    full_automation_code = pre_automation_code + workflow_doc["automation_code"]
+
+    with open(workflow_file_path, "w") as workflow_file:
+        workflow_file.write(full_automation_code)
+    
+    subprocess.Popen(["python3", "workflow_runner.py", workflow_file_path, workflow_id])
+
+        print("WORKFLOW RUNNING: " + workflow_file_path)
+
+def RunAllWorkflowsOnStartup():
+    all_workflows_list = database.GetAllWorkflows()
+
+    for workflow_doc in all_workflows_list:
+        RunWorkflow(str(workflow_doc["_id"]))
+
+# STARTUP (no pun intended)
+RunAllWorkflowsOnStartup()
 
 @app.route("/")
 def hello_world():
@@ -101,17 +145,7 @@ def workflow_action():
 
         gmail_tokens = database.GetUserGmailTokens(user_id)
 
-        pre_automation_code = f'''
-
-from llm_judgement import LlmJudgement
-from gmail_caller import GmailCaller
-
-access_token = "{gmail_tokens[0]}"
-refresh_token = "{gmail_tokens[1]}"
-client_id = "{os.environ.get('GMAIL_CLIENT_ID')}"
-client_secret = "{os.environ.get('GMAIL_CLIENT_SECRET')}"
-        
-        '''
+        pre_automation_code = get_pre_automation_code(gmail_tokens[0], gmail_tokens[1])
 
         workflow_name = response_array[1].strip() # strip removes whitespace
         apple["workflow_name"] = workflow_name
@@ -149,58 +183,22 @@ client_secret = "{os.environ.get('GMAIL_CLIENT_SECRET')}"
         session_id = decrypt_message(request.json['session_id'])
 
         user_temp_data = session[session_id]
+
+        workflow_id = database.SaveUserWorkflow(user_temp_data['user_id'], user_temp_data['current_workflow_name'], user_temp_data['current_workflow_steps'], user_temp_data['current_workflow_automation_code'], True)
         
-        user_directory = os.path.join('user_workflows', user_temp_data["user_id"])
+        RunWorkflow(workflow_id)
 
-        if not os.path.exists(user_directory):
-            os.mkdir(user_directory)
-
-        #workflow_file_path = os.path.join(user_directory, generate_random_string(8) + ".workflow")
-        workflow_file_path = user_temp_data["user_id"] + "_" + generate_random_string(8) + "_workflow.py" # nasty workaround for imports being disgusting
-
-        with open(workflow_file_path, "w") as workflow_file:
-            workflow_file.write(user_temp_data["current_workflow_full_automation_code"])
-        
-        subprocess.Popen(["python3", "workflow_runner.py", workflow_file_path])
-
-        print("WORKFLOW RUNNING: " + workflow_file_path)
-
-        database.SaveUserWorkflow(user_temp_data['user_id'], user_temp_data['current_workflow_name'], user_temp_data['current_workflow_steps'], user_temp_data['current_workflow_automation_code'] )
-        
         return {"message": "workflow running successfully"}
 
     elif workflow_action == "save":
         session_id = decrypt_message(request.json['session_id'])
         user_temp_data = session[session_id]
 
-        database.SaveUserWorkflow(user_temp_data['user_id'], user_temp_data['current_workflow_name'], user_temp_data['current_workflow_steps'], user_temp_data['current_workflow_automation_code'] )
+        workflow_id = database.SaveUserWorkflow(user_temp_data['user_id'], user_temp_data['current_workflow_name'], user_temp_data['current_workflow_steps'], user_temp_data['current_workflow_automation_code'], False)
+
+        RunWorkflow(workflow_id) # running but workflow is paused
         
         return {"message": "workflow saved successfully"}
-
-# superseded currently
-@app.route("/save-workflow-for-later", methods = ['POST'])
-def save_workflow_for_later():
-    # save workflow
-    pass
-
-# superseded currently
-@app.route("/run-workflow", methods = ['POST'])
-def run_workflow():
-    user_directory = os.path.join('user_workflows', session["user_id"])
-
-    if not os.path.exists(user_directory):
-        os.mkdir(user_directory)
-
-    #workflow_file_path = os.path.join(user_directory, generate_random_string(8) + ".workflow")
-    workflow_file_path = user_id + "_" + generate_random_string(8) + "_workflow.py" # nasty workaround for imports being disgusting
-
-    with open(workflow_file_path, "w") as workflow_file:
-        workflow_file.write(session["full_automation_code"])
-    
-    subprocess.Popen(["python3", "workflow_runner.py", workflow_file_path])
-
-    print("WORKFLOW RUNNING: " + workflow_file_path)
-    return {"message": "workflow running successfully"}
 
 @app.route("/list-workflows", methods = ['POST'])
 def list_workflows():
@@ -230,6 +228,34 @@ def delete_workflow():
         return {"message": "workflow deleted successfully"}
     else:
         return flask.make_response('failed to delete workflow', 400)
+
+
+@app.route("/check-workflow-status", methods = ['POST'])
+def delete_workflow():
+    workflow_id_string = request.json['workflow_id']
+
+    if database.CheckIfWorkflowIsOnById(workflow_id_string):
+        return {"workflow_on": True}
+    else:
+        return {"workflow_on": False}
+
+@app.route("/pause-workflow", methods = ['POST'])
+def delete_workflow():
+    workflow_id_string = request.json['workflow_id']
+
+    if database.PauseOrUnpauseUserWorkflow(workflow_id_string):
+        return {"message": "workflow paused successfully"}
+    else:
+        return flask.make_response('failed to pause workflow', 400)
+
+@app.route("/unpause-workflow", methods = ['POST'])
+def delete_workflow():
+    workflow_id_string = request.json['workflow_id']
+
+    if database.PauseOrUnpauseUserWorkflow(workflow_id_string):
+        return {"message": "workflow unpaused successfully"}
+    else:
+        return flask.make_response('failed to pause workflow', 400)
 
 @app.route("/check-gmail-auth", methods = ['POST'])
 def check_gmail_auth():

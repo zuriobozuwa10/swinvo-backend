@@ -2,14 +2,18 @@ import subprocess
 import sys
 import time
 
+from database_accessor import DatabaseAccessor
+
+database = DatabaseAccessor(os.environ.get('MONGO_DB_USER'), os.environ.get('MONGO_DB_PASSWORD'))
 
 def run(workflow_file_path):
   subprocess.run(["nohup", "python3", workflow_file_path, "&"])
 
 
 while True:
-  run(sys.argv[1])
-  time.sleep(15)
+  if database.CheckIfWorkflowIsOnById(arg[2]):
+    run(sys.argv[1])
+    time.sleep(15)
 
 
   
