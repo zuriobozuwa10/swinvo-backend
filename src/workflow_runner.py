@@ -12,7 +12,7 @@ def run(workflow_file_path):
 
 
 while True:
-  if database.CheckIfWorkflowIsOnById(argv[2]):
+  if database.CheckIfWorkflowIsOnById(sys.argv[2]):
     run(sys.argv[1])
     time.sleep(15)
 
