@@ -231,7 +231,7 @@ def delete_workflow():
 
 
 @app.route("/check-workflow-status", methods = ['POST'])
-def delete_workflow():
+def check_workflow_status():
     workflow_id_string = request.json['workflow_id']
 
     if database.CheckIfWorkflowIsOnById(workflow_id_string):
@@ -240,7 +240,7 @@ def delete_workflow():
         return {"workflow_on": False}
 
 @app.route("/pause-workflow", methods = ['POST'])
-def delete_workflow():
+def pause_workflow():
     workflow_id_string = request.json['workflow_id']
 
     if database.PauseOrUnpauseUserWorkflow(workflow_id_string):
@@ -249,7 +249,7 @@ def delete_workflow():
         return flask.make_response('failed to pause workflow', 400)
 
 @app.route("/unpause-workflow", methods = ['POST'])
-def delete_workflow():
+def unpause_workflow():
     workflow_id_string = request.json['workflow_id']
 
     if database.PauseOrUnpauseUserWorkflow(workflow_id_string):
