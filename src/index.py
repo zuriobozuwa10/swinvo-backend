@@ -92,7 +92,7 @@ def RunWorkflow(workflow_id: str):
     
     subprocess.Popen(["python3", "workflow_runner.py", workflow_file_path, workflow_id])
 
-        print("WORKFLOW RUNNING: " + workflow_file_path)
+    print("WORKFLOW RUNNING: " + workflow_file_path)
 
 def RunAllWorkflowsOnStartup():
     all_workflows_list = database.GetAllWorkflows()
