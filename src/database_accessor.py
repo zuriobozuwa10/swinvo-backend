@@ -124,7 +124,9 @@ class DatabaseAccessor:
 
     query = {"_id": obj_id}
 
-    if workflow_document['on'] == 1:
+    workflow_doc = user_workflows_collection.find_one(query)
+
+    if workflow_doc['on'] == 1:
       update_data = {'$set': {'on': 0}}  # pause workflow
 
     else:
