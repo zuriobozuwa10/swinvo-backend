@@ -132,7 +132,7 @@ class DatabaseAccessor:
     else:
       update_data = {'$set': {'on': 1}}  # turn on workflow
 
-    update_result = collection.update_one(query, update_data)
+    update_result = user_workflows_collection.update_one(query, update_data)
 
     if update_result.matched_count == 1:
       return True
