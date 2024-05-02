@@ -38,6 +38,9 @@ class GmailCaller:
         print("refresh")
         credentials.refresh(google.auth.transport.requests.Request())
 
+    if credentials.expired:
+        print("HELLO")
+
     self.gmail_service = googleapiclient.discovery.build('gmail', 'v1', credentials = credentials)
 
   def CheckForNewEmail(self) -> str: # Currently able to process just one email ( i think )
