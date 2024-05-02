@@ -62,6 +62,7 @@ class DatabaseAccessor:
       "workflow_steps": workflow_steps,
       "automation_code": automation_code,
       "on": 1 if on else 0
+      "email_queue": []
     }
 
     result = user_workflows_collection.insert_one(user_workflow_document)
