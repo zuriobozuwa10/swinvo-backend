@@ -62,6 +62,7 @@ with open(intro_path, 'r') as file:
 def get_pre_automation_code(gmail_access_token: str, gmail_refresh_token: str):
     code = f'''
 
+import sys
 from llm_judgement import LlmJudgement
 from gmail_caller import GmailCaller
 
