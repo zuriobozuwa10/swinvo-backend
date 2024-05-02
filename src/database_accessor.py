@@ -45,7 +45,10 @@ class DatabaseAccessor:
 
     user_document = gmail_user_auths_collection.find_one({"auth0_user_id": user_id})
 
-    tokens = (user_document["gmail_access_token"], user_document["gmail_refresh_token"])
+    if user_document:
+      tokens = (user_document["gmail_access_token"], user_document["gmail_refresh_token"])
+    else:
+      return None
 
     return tokens
 

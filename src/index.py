@@ -81,6 +81,10 @@ def RunWorkflow(workflow_id: str):
 
     gmail_tokens = database.GetUserGmailTokens(user_id)
 
+    # TODO Make this more robust; let user know at front end that we can't do this workflow
+    if gmail_tokens == None:
+        return
+
     workflow_file_path = user_id + "_" + generate_random_string(8) + "_workflow.py" # nasty workaround for imports being disgusting
 
     pre_automation_code = get_pre_automation_code(gmail_tokens[0], gmail_tokens[1])
