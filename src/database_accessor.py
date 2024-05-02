@@ -138,6 +138,10 @@ class DatabaseAccessor:
 
     workflow_doc = user_workflows_collection.find_one({"_id": obj_id})
 
+    if workflow_doc == None:
+      print("Workflow does not exist")
+      return False
+
     if workflow_doc['on'] == 1:
       return True
     else:
