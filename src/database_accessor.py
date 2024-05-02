@@ -179,4 +179,3 @@ class DatabaseAccessor:
     else:
       return False
 
-
