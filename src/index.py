@@ -149,6 +149,9 @@ def workflow_action():
 
         gmail_tokens = database.GetUserGmailTokens(user_id)
 
+        if gmail_tokens == None:
+            return flask.jsonify({"message": "Please integrate with Gmail."}) # TODO: Change this for all integrations
+
         pre_automation_code = get_pre_automation_code(gmail_tokens[0], gmail_tokens[1])
 
         workflow_name = response_array[1].strip() # strip removes whitespace
