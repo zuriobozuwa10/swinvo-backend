@@ -84,7 +84,7 @@ class DatabaseAccessor:
 
     update_data =  {'$push': {'email_queue': user_email_document}}
 
-    update_result = collection.update_one(query, update_data)
+    update_result = user_workflows_collection.update_one(query, update_data)
 
     if update_result.matched_count == 1:
       return True

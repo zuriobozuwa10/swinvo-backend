@@ -221,6 +221,8 @@ def list_workflows():
         workflow["workflow_name"] = doc["workflow_name"]
         workflow["workflow_steps"] = doc["workflow_steps"]
         workflow["workflow_id"] = str(doc["_id"])
+
+        workflow["email_queue"] = doc["email_queue"] # need more queues.
         # TODO: could return automation code in future
         # TODO: we have to return something that can help us pause the workflow
         workflows_list.append(workflow)

@@ -6,6 +6,7 @@ import googleapiclient.discovery
 import base64
 import datetime
 import time
+import os
 
 from bs4 import BeautifulSoup
 
@@ -100,7 +101,7 @@ class GmailCaller:
     except Exception as e:
         print("An error occurred:", e)
 
-  def QueueSendEmail(self, mongo_obj_id_string: str, address_to: str, subject: str, text: str) -> bool:
+  def QueueSendEmail(self, mongo_obj_id_string: str, address_to: str, subject: str, text: str):
     self.database.SaveEmailToWorkflow(mongo_obj_id_string, address_to, subject, text)
 
   def SendEmail(self, address_to: str, subject: str, text: str) -> bool:
