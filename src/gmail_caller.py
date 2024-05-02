@@ -9,6 +9,8 @@ import time
 
 from bs4 import BeautifulSoup
 
+from database_accessor import DatabaseAccessor
+
 def html_to_plain_text(html_content):
     soup = BeautifulSoup(html_content, 'html.parser')
     plain_text = soup.get_text()
@@ -39,6 +41,8 @@ class GmailCaller:
         credentials.refresh(google.auth.transport.requests.Request())
 
     self.gmail_service = googleapiclient.discovery.build('gmail', 'v1', credentials = credentials)
+
+    self.database = DatabaseAccessor(os.environ.get('MONGO_DB_USER'), os.environ.get('MONGO_DB_PASSWORD')) ###
 
   def CheckForNewEmail(self) -> str: # Currently able to process just one email ( i think )
     try:
@@ -95,6 +99,9 @@ class GmailCaller:
 
     except Exception as e:
         print("An error occurred:", e)
+
+  def QueueSendEmail(self, mongo_obj_id_string: str, address_to: str, subject: str, text: str) -> bool:
+    self.database.SaveEmailToWorkflow(mongo_obj_id_string, address_to, subject, text)
 
   def SendEmail(self, address_to: str, subject: str, text: str) -> bool:
     sender = self.GetEmailAddress()

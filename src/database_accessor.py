@@ -68,6 +68,29 @@ class DatabaseAccessor:
     
     return str(result.inserted_id)
 
+  def SaveEmailToWorkflow(self, mongo_obj_id_string: str, address_to: str, subject: str, text: str) -> bool:
+    database = self.client["swinvo-database"]
+    user_workflows_collection = database["user-workflows"]
+
+    obj_id = ObjectId(mongo_obj_id_string)
+
+    query = {"_id": obj_id}
+
+    user_email_document = {
+      "address_to": address_to,
+      "subject": subject,
+      "text": text,
+    }
+
+    update_data =  {'$push': {'email_queue': user_email_document}}
+
+    update_result = collection.update_one(query, update_data)
+
+    if update_result.matched_count == 1:
+      return True
+    else:
+      return False
+
   def GetUserWorkflows(self, user_id: str) -> list:
     database = self.client["swinvo-database"]
     user_workflows_collection = database["user-workflows"]
