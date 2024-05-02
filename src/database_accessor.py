@@ -61,7 +61,7 @@ class DatabaseAccessor:
       "workflow_name": workflow_name,
       "workflow_steps": workflow_steps,
       "automation_code": automation_code,
-      "on": 1 if on else 0
+      "on": 1 if on else 0,
       "email_queue": []
     }
 
