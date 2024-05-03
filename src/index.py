@@ -285,7 +285,7 @@ def send_message():
     else:
         return {"message": "Failed to send message"}
 
-    if database.DeleteEmailFromWorkflow(workflow_id_string, message_index)
+    if database.DeleteEmailFromWorkflow(workflow_id_string, message_index):
         return {"message": "message sent successfully and deleted from database"}
     else:
         return flask.make_response('failed to delete message from db after sending', 400)
@@ -298,11 +298,11 @@ def delete_message():
     workflow_id_string = request.json['workflow_id']
     message_index = request.json['message_index']
 
-    if database.DeleteEmailFromWorkflow(workflow_id_string, message_index)
+    if database.DeleteEmailFromWorkflow(workflow_id_string, message_index):
         return {"message": "message deleted successfully"}
     else:
-        #return flask.make_response('failed to delete message', 400)
-        return {"message": "FAILED"}
+        return flask.make_response('failed to delete message', 400)
+        #return {"message": "FAILED"}
 
 
 @app.route("/check-gmail-auth", methods = ['POST'])
