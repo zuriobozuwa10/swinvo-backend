@@ -43,8 +43,6 @@ class GmailCaller:
 
     self.gmail_service = googleapiclient.discovery.build('gmail', 'v1', credentials = credentials)
 
-    self.database = DatabaseAccessor(os.environ.get('MONGO_DB_USER'), os.environ.get('MONGO_DB_PASSWORD')) ###
-
   def CheckForNewEmail(self) -> str: # Currently able to process just one email ( i think )
     try:
         # Get the list of messages
@@ -102,7 +100,8 @@ class GmailCaller:
         print("An error occurred:", e)
 
   def QueueSendEmail(self, mongo_obj_id_string: str, address_to: str, subject: str, text: str):
-    self.database.SaveEmailToWorkflow(mongo_obj_id_string, address_to, subject, text)
+    database = DatabaseAccessor(os.environ.get('MONGO_DB_USER'), os.environ.get('MONGO_DB_PASSWORD')) ###
+    database.SaveEmailToWorkflow(mongo_obj_id_string, address_to, subject, text)
 
   def SendEmail(self, address_to: str, subject: str, text: str) -> bool:
     sender = self.GetEmailAddress()
