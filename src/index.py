@@ -15,6 +15,7 @@ import random, string
 
 from openai_model_user import OpenAiModelUser
 from database_accessor import DatabaseAccessor
+from gmail_caller import GmailCaller
 
 app = flask.Flask(__name__)
 
