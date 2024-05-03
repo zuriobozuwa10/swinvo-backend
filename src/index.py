@@ -301,7 +301,8 @@ def delete_message():
     if database.DeleteEmailFromWorkflow(workflow_id_string, message_index)
         return {"message": "message deleted successfully"}
     else:
-        return flask.make_response('failed to delete message', 400)
+        #return flask.make_response('failed to delete message', 400)
+        return {"message": "FAILED"}
 
 
 @app.route("/check-gmail-auth", methods = ['POST'])
