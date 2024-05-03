@@ -267,6 +267,43 @@ def unpause_workflow():
     else:
         return flask.make_response('failed to pause workflow', 400)
 
+@app.route("/send-message", methods = ['POST'])
+def send_message():
+
+    user_id = request.json['uid']
+    workflow_id_string = request.json['workflow_id']
+    message_index = request.json['message_index']
+
+    gmail_tokens = database.GetUserGmailTokens(user_id)
+
+    gmail_caller = GmailCaller(gmail_tokens[0], gmail_tokens[1], os.environ.get('GMAIL_CLIENT_ID'), os.environ.get('GMAIL_CLIENT_SECRET'))
+
+    email_tuple = database.GetEmailFromWorkflow(workflow_id_string, message_index)
+
+    if gmail_caller.SendEmail(email_tuple[0], email_tuple[1], email_tuple[2]):
+        pass
+    else:
+        return {"message": "Failed to send message"}
+
+    if database.DeleteEmailFromWorkflow(workflow_id_string, message_index)
+        return {"message": "message sent successfully and deleted from database"}
+    else:
+        return flask.make_response('failed to delete message from db after sending', 400)
+
+
+@app.route("/delete-message", methods = ['POST'])
+def delete_message():
+
+    user_id = request.json['uid']
+    workflow_id_string = request.json['workflow_id']
+    message_index = request.json['message_index']
+
+    if database.DeleteEmailFromWorkflow(workflow_id_string, message_index)
+        return {"message": "message deleted successfully"}
+    else:
+        return flask.make_response('failed to delete message', 400)
+
+
 @app.route("/check-gmail-auth", methods = ['POST'])
 def check_gmail_auth():
     user_id = request.json['uid']

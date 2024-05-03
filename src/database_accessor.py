@@ -92,6 +92,46 @@ class DatabaseAccessor:
     else:
       return False
 
+
+  def GetEmailFromWorkflow(self, mongo_obj_id_string: str, message_index: int) -> (str, str, str): #(address_to, subject, text)
+    database = self.client["swinvo-database"]
+    user_workflows_collection = database["user-workflows"]
+
+    obj_id = ObjectId(mongo_obj_id_string)
+
+    query = {"_id": obj_id}
+
+    workflow_doc = user_workflows_collection.find_one(query)
+
+    try:
+      message = workflow_doc['email_queue'][message_index]
+      return (message['address_to'], message['subject'], message['text'])
+
+    except Exception as e:
+      print("Error getting Email", e)
+      return None
+
+  def DeleteEmailFromWorkflow(self, mongo_obj_id_string: str, message_index: int) -> bool:
+    database = self.client["swinvo-database"]
+    user_workflows_collection = database["user-workflows"]
+
+    obj_id = ObjectId(mongo_obj_id_string)
+
+    query = {"_id": obj_id}
+
+    workflow_doc = user_workflows_collection.find_one(query)
+
+    del workflow_doc['email_queue'][message_index]
+
+    update_data = {'$set': {'email_queue': workflow_doc['email_queue']}}
+
+    update_result = user_workflows_collection.update_one(query, update_data)
+
+    if update_result.matched_count == 1:
+      return True
+    else:
+      return False
+
   def GetUserWorkflows(self, user_id: str) -> list:
     database = self.client["swinvo-database"]
     user_workflows_collection = database["user-workflows"]
