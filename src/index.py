@@ -19,7 +19,7 @@ from gmail_caller import GmailCaller
 
 import stripe
 
-stripe.api_key = "
+stripe.api_key = " # secret key, test at the moment
 
 app = flask.Flask(__name__)
 
@@ -428,4 +428,5 @@ def stripe_create_checkout_session():
         print("session url: ", session.url)
         return flask.jsonify({'stripe_session_url': session.url})
     except Exception as e:
+        print("stripe error: ", str(e))
         return flask.jsonify(error=str(e)), 403
