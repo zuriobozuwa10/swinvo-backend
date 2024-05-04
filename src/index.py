@@ -419,6 +419,7 @@ def stripe_create_checkout_session():
     try:
         session = stripe.checkout.Session.create(
             success_url="https://app.swinvo.com",
+            cancel_url="https://app.swinvo.com/subscribe",
             line_items=[{"price": "price_1PClUKD6NaA2VbAqOvpiFRMP", "quantity": 1}],
             mode="subscription",
             metadata={"user_id": user_id}
