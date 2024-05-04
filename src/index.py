@@ -418,13 +418,11 @@ def stripe_create_checkout_session():
 
     try:
         session = stripe.checkout.Session.create(
-            payment_method_types=['card'],
-            subscription_data={
-                'items': [{
-                    'price': 'price_1PClUKD6NaA2VbAqOvpiFRMP',
-                }],
-            },
+            success_url="https://app.swinvo.com",
+            line_items=[{"price": "price_1PClUKD6NaA2VbAqOvpiFRMP", "quantity": 1}],
+            mode="payment",
         )
+                    
         print("session url: ", session.url)
         return flask.jsonify({'stripe_session_url': session.url})
     except Exception as e:
