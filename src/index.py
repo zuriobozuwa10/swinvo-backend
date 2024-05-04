@@ -423,6 +423,6 @@ def stripe_create_checkout_session():
                 }],
             },
         )
-        return jsonify({'stripe_session_url': session.url})
+        return flask.jsonify({'stripe_session_url': session.url})
     except Exception as e:
-        return jsonify(error=str(e)), 403
+        return flask.jsonify(error=str(e)), 403
