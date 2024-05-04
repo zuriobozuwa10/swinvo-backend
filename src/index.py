@@ -19,6 +19,8 @@ from gmail_caller import GmailCaller
 
 import stripe
 
+stripe.api_key = "
+
 app = flask.Flask(__name__)
 
 database = DatabaseAccessor(os.environ.get('MONGO_DB_USER'), os.environ.get('MONGO_DB_PASSWORD'))
