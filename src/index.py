@@ -420,7 +420,7 @@ def stripe_create_checkout_session():
         session = stripe.checkout.Session.create(
             success_url="https://app.swinvo.com",
             line_items=[{"price": "price_1PClUKD6NaA2VbAqOvpiFRMP", "quantity": 1}],
-            mode="payment",
+            mode="subscription",
         )
                     
         print("session url: ", session.url)
