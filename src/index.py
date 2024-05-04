@@ -410,7 +410,7 @@ def debug_endpoint_2():
     return ''
 
 
-@app.route("/stripe-create-checkout-session")
+@app.route("/stripe-create-checkout-session", methods = ['POST'])
 def stripe_create_checkout_session():
     user_id = request.json.get('uid')
 
