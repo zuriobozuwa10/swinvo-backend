@@ -423,6 +423,8 @@ def stripe_create_checkout_session():
             mode="subscription",
             metadata={"user_id": user_id}
         )
+
+        print(session)
                     
         print("session url: ", session.url)
 
