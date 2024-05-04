@@ -421,7 +421,7 @@ def stripe_create_checkout_session():
             payment_method_types=['card'],
             subscription_data={
                 'items': [{
-                    'plan': 'plan_H5ggYwtDq4fgea',  # Replace with your actual plan ID
+                    'price': 'price_1PClUKD6NaA2VbAqOvpiFRMP',
                 }],
             },
         )
