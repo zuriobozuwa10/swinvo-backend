@@ -9,3 +9,4 @@ pyyaml
 google-api-python-client
 beautifulsoup4
 cryptography
+stripe
