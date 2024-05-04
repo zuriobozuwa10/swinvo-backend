@@ -17,6 +17,8 @@ from openai_model_user import OpenAiModelUser
 from database_accessor import DatabaseAccessor
 from gmail_caller import GmailCaller
 
+import stripe
+
 app = flask.Flask(__name__)
 
 database = DatabaseAccessor(os.environ.get('MONGO_DB_USER'), os.environ.get('MONGO_DB_PASSWORD'))
@@ -407,3 +409,20 @@ def debug_endpoint_2():
     print("ENDPOINT 2 REACHED")
     return ''
 
+
+@app.route("/stripe-create-checkout-session")
+def stripe_create_checkout_session():
+    user_id = request.json.get('uid')
+
+    try:
+        session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            subscription_data={
+                'items': [{
+                    'plan': 'plan_H5ggYwtDq4fgea',  # Replace with your actual plan ID
+                }],
+            },
+        )
+        return jsonify({'stripe_session_url': session.url})
+    except Exception as e:
+        return jsonify(error=str(e)), 403
