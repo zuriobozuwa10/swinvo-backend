@@ -460,5 +460,22 @@ def stripe_webhook():
 
     # Handle event with mongo here
     ###
+    if event['type'] == 'checkout.session.completed':
+        session = event['data']['object']  ## object here is a session: https://docs.stripe.com/api/financial_connections/sessions/object
+
+        user_id = session['metadata']['user_id']
+        customer_id = session["customer"]
+        subscription_id = session["subscription"]
+
+        subscription_status = True ###
+
+        if not database.CheckUserStripeExists(user_id):
+            database.AddStripeUserFirstSubscription(user_id, customer_id, subscription_id) # add subscription when user never been subscribed before
+        else:
+            if database.CheckUserStripeSubscriptionStatus(user_id):
+                print("ERROR: User trying to double-subscribe")
+                return # do nothing
+            else:
+                database.StripeUserAnotherSubscription(user_id, customer_id, subscription_id)# add subscr when user record already exists. replace any existing
 
     return flask.jsonify(success=True), 200

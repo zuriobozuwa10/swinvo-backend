@@ -223,3 +223,79 @@ class DatabaseAccessor:
     else:
       return False
 
+  #### Stripe
+
+  def AddStripeUserFirstSubscription(self, user_id: str, customer_id: str, subscription_id: str, subscription_status: bool = True) -> bool:
+    # Sets subscription status to True in this method
+    database = self.client["swinvo-database"]
+    user_stripe_collection = database["user-stripe"]
+
+    user_stripe_doc = {}
+    user_stripe_doc["auth_user_id"] = user_id
+    user_stripe_doc["stripe_customer_id"] = customer_id
+    user_stripe_doc["stripe_subscription_id"] = subscription_id
+    user_stripe_doc["stripe_subscription_status"] = subscription_status
+
+    user_stripe_collection.insert_one(user_stripe_doc)
+
+    return True
+
+  def CheckUserStripeExists(self, user_id: str) -> bool:
+    database = self.client["swinvo-database"]
+    user_stripe_collection = database["user-stripe"]
+
+    find_user = user_stripe_collection.find_one({"auth0_user_id": user_id})
+
+    if find_user:
+      return True
+    else:
+      return False
+
+  def CheckUserStripeSubscriptionStatus(self, user_id: str) -> bool:
+    database = self.client["swinvo-database"]
+    user_stripe_collection = database["user-stripe"]
+
+    user_stripe_doc = user_stripe_collection.find_one({"auth0_user_id": user_id})
+
+    if user_stripe_doc == None:
+      #print("Stripe document does not exist")
+      return False
+
+    if (user_stripe_doc['stripe_subscription_status']):
+      return True
+    else:
+      return False
+
+  def ToggleStripeSubscription(self, user_id: str) -> bool:
+    database = self.client["swinvo-database"]
+    user_stripe_collection = database["user-stripe"]
+
+    query = {"auth0_user_id": user_id}
+
+    user_stripe_doc = user_stripe_collection.find_one(query)
+
+    if user_stripe_doc == None:
+      #print("Stripe document does not exist")
+      return False
+
+    if user_stripe_doc['stripe_subscription_status'] == True:
+      update_data = {'$set': {'stripe_subscription_status': False}}  # Set subscription off
+
+    else:
+      update_data = {'$set': {'stripe_subscription_status': True}}  # Set subscription on
+
+    update_result = user_stripe_collection.update_one(query, update_data)
+
+    if update_result.matched_count == 1:
+      return True
+    else:
+      return False
+
+  def StripeUserAnotherSubscription(self, user_id: str, customer_id: str, subscription_id: str, subscription_status: bool = True) -> bool:
+    # Sets subscription status to True in this method
+    database = self.client["swinvo-database"]
+    user_stripe_collection = database["user-stripe"]
+
+    ####
+
+    return None
