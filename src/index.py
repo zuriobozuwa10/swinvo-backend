@@ -438,7 +438,7 @@ def stripe_create_checkout_session():
         return flask.jsonify(error=str(e)), 403
 
 @app.route("/stripe-webhook", methods = ['POST'])
-def stripe_webhook()
+def stripe_webhook():
     endpoint_secret = ""
     print("stripe webhook")
 
