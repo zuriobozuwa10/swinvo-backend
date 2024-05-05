@@ -475,3 +475,12 @@ def stripe_webhook():
             database.StripeUserAnotherSubscription(user_id, customer_id, subscription_id)# add subscr when user record already exists. replace any existing
 
     return flask.jsonify(success=True), 200
+
+@app.route("/check-if-user-subscribed", methods = ['POST'])
+def checK_if_user_subscribed():
+    user_id = request.json['uid']
+
+    if database.CheckUserStripeExists(user_id) and database.CheckUserStripeSubscriptionStatus(user_id):
+        return {"user_subscribed": True}
+    else:
+        return {"user_subscribed": False}
