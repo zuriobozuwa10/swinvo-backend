@@ -128,6 +128,13 @@ def workflow_action():
 
         user_id = request.json['uid']
 
+        ### Check if user is pro member, if not, then they can only have one workflow:
+        if database.CheckUserStripeSubscriptionStatus(user_id):
+            pass
+        else:
+            if ( len(database.GetUserWorkflows(user_id)) > 0 ):
+                return flask.jsonify({"message": "Get Swinvo Pro to have more than 1 workflow!"})
+
         if user_id not in user_chat_sessions:
             user_model = OpenAiModelUser()
             user_model.Use(intro)

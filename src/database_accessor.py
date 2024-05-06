@@ -231,7 +231,7 @@ class DatabaseAccessor:
     user_stripe_collection = database["user-stripe"]
 
     user_stripe_doc = {}
-    user_stripe_doc["auth_user_id"] = user_id
+    user_stripe_doc["auth0_user_id"] = user_id
     user_stripe_doc["stripe_customer_id"] = customer_id
     user_stripe_doc["stripe_subscription_id"] = subscription_id
     user_stripe_doc["stripe_subscription_status"] = subscription_status
