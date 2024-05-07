@@ -307,3 +307,24 @@ class DatabaseAccessor:
     user_stripe_doc = user_stripe_collection.find_one({"auth0_user_id": user_id})
 
     return user_stripe_doc['stripe_subscription_id']
+
+  def EndedStripeUserSubscription(self, subscription_id: str) -> bool:
+    database = self.client["swinvo-database"]
+    user_stripe_collection = database["user-stripe"]
+
+    query = {"stripe_subscription_id": subscription_id}
+
+    user_stripe_doc = user_stripe_collection.find_one(query)
+
+    if user_stripe_doc['stripe_subscription_status'] == True:
+      update_data = {'$set': {'stripe_subscription_status': False}} 
+    else:
+      print("We shouldn't be here. Tried to end user sub thats already inactive.")
+      update_data = {'$set': {'stripe_subscription_status': False}} 
+
+    update_result = user_stripe_collection.update_one(query, update_data)
+
+    if update_result.matched_count == 1:
+      return True
+    else:
+      return False

@@ -481,6 +481,12 @@ def stripe_webhook():
         else:
             database.StripeUserAnotherSubscription(user_id, customer_id, subscription_id)# add subscr when user record already exists. replace any existing
 
+    elif event['type'] == 'customer.subscription.updated':
+        subscription = event['data']['object']
+        if subscription['status'] == 'canceled':
+            database.EndedStripeUserSubscription(subscription_id)
+
+
     return flask.jsonify(success=True), 200
 
 @app.route("/check-if-user-subscribed", methods = ['POST'])
