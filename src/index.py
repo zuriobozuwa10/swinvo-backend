@@ -502,7 +502,7 @@ def stripe_subscription_info_public():
         subscription = stripe.Subscription.retrieve(database.GetUserStripeSubscriptionId(user_id))
 
         info_public['current_period_end'] = subscription.current_period_end
-        info_public['price'] = subscription.items.data[0].price.unit_amount
+        info_public['price'] = subscription.items['data'][0]['price']['unit_amount']
         info_public['cancel_at_period_end'] = subscription.cancel_at_period_end
 
         print(subscription)
