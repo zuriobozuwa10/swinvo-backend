@@ -463,7 +463,7 @@ def stripe_webhook():
         # Invalid signature
         return 'Invalid signature', 400
 
-    print(event)
+    #print(event)
 
     # Handle event with mongo here
     ###
@@ -511,7 +511,7 @@ def stripe_subscription_info_public():
         info_public['price'] = subscription['items']['data'][0]['price']['unit_amount']
         info_public['cancel_at_period_end'] = subscription.cancel_at_period_end
 
-        print(subscription)
+        #print(subscription)
         print(info_public)
 
         return flask.jsonify(info_public)
@@ -526,7 +526,7 @@ def stripe_cancel_subscription():
     if database.CheckUserStripeSubscriptionStatus(user_id):
         try:
             stripe.Subscription.modify(
-                database.GetUserStripeSubscriptionId(user_id)
+                database.GetUserStripeSubscriptionId(user_id),
                 cancel_at_period_end=True
             )
         except Exception as e:
