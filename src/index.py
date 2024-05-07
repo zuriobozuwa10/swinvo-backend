@@ -518,11 +518,16 @@ def stripe_cancel_subscription():
     user_id = request.json['uid']
 
     if database.CheckUserStripeSubscriptionStatus(user_id):
-        #stripe.Subscription.modify(
-        #    database.GetUserStripeSubscriptionId(user_id)
-        #    cancel_at_period_end=True
-        #)
-        return {"message": "Placeholder"}
+        try:
+            stripe.Subscription.modify(
+                database.GetUserStripeSubscriptionId(user_id)
+                cancel_at_period_end=True
+            )
+        except Exception as e:
+            print("stripe error cancellation: ", str(e))
+            return flask.jsonify(error=str(e)), 500
+
+        return {"message": "Successfully cancelled subscription, ends at end of billing cycle."}
 
     else:
         return {"message": "User is already not subscribed to Pro"}
