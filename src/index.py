@@ -501,7 +501,7 @@ def stripe_subscription_info_public():
     if database.CheckUserStripeSubscriptionStatus(user_id):
         subscription = stripe.Subscription.retrieve(database.GetUserStripeSubscriptionId(user_id))
 
-        info_public['next_renewal'] = subscription.current_period_end
+        info_public['current_period_end'] = subscription.current_period_end
         info_public['price'] = subscription.items.data[0].price.unit_amount
         info_public['cancel_at_period_end'] = subscription.cancel_at_period_end
 
