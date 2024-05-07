@@ -484,10 +484,43 @@ def stripe_webhook():
     return flask.jsonify(success=True), 200
 
 @app.route("/check-if-user-subscribed", methods = ['POST'])
-def checK_if_user_subscribed():
+def check_if_user_subscribed():
     user_id = request.json['uid']
 
     if database.CheckUserStripeExists(user_id) and database.CheckUserStripeSubscriptionStatus(user_id):
         return {"user_subscribed": True}
     else:
         return {"user_subscribed": False}
+
+@app.route("/stripe-subscription-info-public", methods = ['POST'])
+def stripe_subscription_info_public():
+    user_id = request.json['uid']
+
+    info_public = {}
+
+    if database.CheckUserStripeSubscriptionStatus(user_id):
+        subscription = stripe.Subscription.retrieve(database.GetUserStripeSubscriptionId(user_id))
+
+        info_public['next_renewal'] = subscription.current_period_end
+        #info_public['price'] = # call stripe api to get price
+
+        print(subscription)
+        print(info_public)
+
+        return flask.jsonify(info_public)
+
+    else:
+        return flask.jsonify({"message": "User is not subscribed to Pro"})
+
+@app.route("/stripe-cancel-subscription", methods = ['POST'])
+def stripe_cancel_subscription():
+    user_id = request.json['uid']
+
+    if database.CheckUserStripeSubscriptionStatus(user_id):
+        stripe.Subscription.modify(
+            database.GetUserStripeSubscriptionId(user_id)
+            cancel_at_period_end=True
+        )
+
+    else:
+        return {"message": "User is already not subscribed to Pro"}

@@ -299,3 +299,11 @@ class DatabaseAccessor:
     ####
 
     return None
+
+  def GetUserStripeSubscriptionId(self, user_id: str):
+    database = self.client["swinvo-database"]
+    user_stripe_collection = database["user-stripe"]
+
+    user_stripe_doc = user_stripe_collection.find_one({"auth0_user_id": user_id})
+
+    return user_stripe_doc['stripe_subscription_id']
