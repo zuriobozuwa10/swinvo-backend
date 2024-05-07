@@ -503,6 +503,7 @@ def stripe_subscription_info_public():
 
         info_public['next_renewal'] = subscription.current_period_end
         #info_public['price'] = # call stripe api to get price
+        info_public['cancel_at_period_end'] = subscription.cancel_at_period_end
 
         print(subscription)
         print(info_public)
