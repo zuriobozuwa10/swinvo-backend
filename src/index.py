@@ -517,10 +517,11 @@ def stripe_cancel_subscription():
     user_id = request.json['uid']
 
     if database.CheckUserStripeSubscriptionStatus(user_id):
-        stripe.Subscription.modify(
-            database.GetUserStripeSubscriptionId(user_id)
-            cancel_at_period_end=True
-        )
+        #stripe.Subscription.modify(
+        #    database.GetUserStripeSubscriptionId(user_id)
+        #    cancel_at_period_end=True
+        #)
+        return {"message": "Placeholder"}
 
     else:
         return {"message": "User is already not subscribed to Pro"}
