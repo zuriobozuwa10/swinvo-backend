@@ -20,7 +20,11 @@ from gmail_caller import GmailCaller
 
 import stripe
 
-stripe.api_key = " # secret key, test at the moment
+## test
+##stripe.api_key = " # secret key, test at the moment
+
+# live
+stripe.api_key = os.environ.get('STRIPE_SECRET_KEY')
 
 app = flask.Flask(__name__)
 
@@ -424,6 +428,12 @@ def debug_endpoint_2():
 def stripe_create_checkout_session():
     user_id = request.json.get('uid')
 
+    #test
+    #price_id = "price_1PClUKD6NaA2VbAqOvpiFRMP"
+
+    #live
+    price_id = "price_1PEChCD6NaA2VbAq0rsOGGPm"
+
     timestamp_in_7_days = datetime.now() + timedelta(days=7, hours=5)
     trial_end = round(timestamp_in_7_days.timestamp())
 
@@ -431,7 +441,7 @@ def stripe_create_checkout_session():
         session = stripe.checkout.Session.create(
             success_url="https://app.swinvo.com",
             cancel_url="https://app.swinvo.com/subscribe",
-            line_items=[{"price": "price_1PClUKD6NaA2VbAqOvpiFRMP", "quantity": 1}],
+            line_items=[{"price": price_id, "quantity": 1}],
             mode="subscription",
             metadata={"user_id": user_id},
             subscription_data={"trial_end": trial_end}
@@ -451,7 +461,12 @@ def stripe_create_checkout_session():
 
 @app.route("/stripe-webhook", methods = ['POST'])
 def stripe_webhook():
+    #TEST
+    #endpoint_secret = ""
+
+    #LIVE
     endpoint_secret = ""
+
     print("stripe webhook")
 
     payload = request.data
