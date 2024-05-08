@@ -10,6 +10,7 @@ import yaml
 from cryptography.fernet import Fernet
 
 import base64
+from datetime import datetime, timedelta
 
 import random, string
 
@@ -423,6 +424,9 @@ def debug_endpoint_2():
 def stripe_create_checkout_session():
     user_id = request.json.get('uid')
 
+    timestamp_in_7_days = datetime.now() + timedelta(days=7)
+    trial_end = round(timestamp_in_7_days.timestamp())
+
     try:
         session = stripe.checkout.Session.create(
             success_url="https://app.swinvo.com",
@@ -430,7 +434,7 @@ def stripe_create_checkout_session():
             line_items=[{"price": "price_1PClUKD6NaA2VbAqOvpiFRMP", "quantity": 1}],
             mode="subscription",
             metadata={"user_id": user_id},
-            subscription_data={"trial_end": 1715429252}
+            subscription_data={"trial_end": trial_end}
         )
 
         print(session)
