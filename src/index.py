@@ -503,10 +503,33 @@ def stripe_webhook():
 def check_if_user_subscribed():
     user_id = request.json['uid']
 
-    if database.CheckUserStripeExists(user_id) and database.CheckUserStripeSubscriptionStatus(user_id):
-        return {"user_subscribed": True}
+    # Check if user is on trial
+
+    subscription = stripe.Subscription.retrieve(database.GetUserStripeSubscriptionId(user_id))
+
+    if subscription.status == 'trialing':
+        trialing = True
+        trial_end = subscription.trial_end
     else:
-        return {"user_subscribed": False}
+        trialing = False
+
+
+
+    apple = {}
+
+    if database.CheckUserStripeSubscriptionStatus(user_id):
+        apple["user_subscribed"] = True
+    else:
+        apple["user_subscribed"] = False
+
+    if trialing:
+        apple["trialing"] = True
+        apple["trial_end"] = trial_end
+    else:
+        apple["trialing"] = False
+        apple["trial_end"] = None
+
+    return flask.jsonify(apple)
 
 @app.route("/stripe-subscription-info-public", methods = ['POST'])
 def stripe_subscription_info_public():
