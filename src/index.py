@@ -429,7 +429,8 @@ def stripe_create_checkout_session():
             cancel_url="https://app.swinvo.com/subscribe",
             line_items=[{"price": "price_1PClUKD6NaA2VbAqOvpiFRMP", "quantity": 1}],
             mode="subscription",
-            metadata={"user_id": user_id}
+            metadata={"user_id": user_id},
+            subscription_data={"trial_end": 1715429252}
         )
 
         print(session)
@@ -486,6 +487,11 @@ def stripe_webhook():
         if subscription['status'] == 'canceled':
             database.EndedStripeUserSubscription(subscription_id)
 
+    elif event['type'] == 'customer.subscription.deleted':
+        subscription = event['data']['object']
+        if subscription['status'] == 'canceled':
+            database.EndedStripeUserSubscription(subscription_id)
+
 
     return flask.jsonify(success=True), 200
 
@@ -510,6 +516,9 @@ def stripe_subscription_info_public():
         info_public['current_period_end'] = subscription.current_period_end
         info_public['price'] = subscription['items']['data'][0]['price']['unit_amount']
         info_public['cancel_at_period_end'] = subscription.cancel_at_period_end
+
+        info_public['trial_end'] = #
+        info_public['trial_status'] = #
 
         #print(subscription)
         print(info_public)
