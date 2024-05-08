@@ -517,8 +517,8 @@ def stripe_subscription_info_public():
         info_public['price'] = subscription['items']['data'][0]['price']['unit_amount']
         info_public['cancel_at_period_end'] = subscription.cancel_at_period_end
 
-        info_public['trial_end'] = #
-        info_public['trial_status'] = #
+        #info_public['trial_end'] = #
+        #info_public['trial_status'] = #
 
         #print(subscription)
         print(info_public)
