@@ -133,6 +133,9 @@ def workflow_action():
 
         user_id = request.json['uid']
 
+        if not user_id:
+            return flask.jsonify({"message": "Please Sign In!"})
+
         ### Check if user is pro member, if not, then they can only have one workflow:
         if database.CheckUserStripeSubscriptionStatus(user_id):
             pass
