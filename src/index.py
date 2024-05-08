@@ -424,7 +424,7 @@ def debug_endpoint_2():
 def stripe_create_checkout_session():
     user_id = request.json.get('uid')
 
-    timestamp_in_7_days = datetime.now() + timedelta(days=7)
+    timestamp_in_7_days = datetime.now() + timedelta(days=7, hours=5)
     trial_end = round(timestamp_in_7_days.timestamp())
 
     try:
