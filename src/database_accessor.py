@@ -52,6 +52,44 @@ class DatabaseAccessor:
 
     return tokens
 
+  def AddUserOutlookAuth(self, user_id: str, access_token: str, refresh_token: str) -> bool:
+    database = self.client["swinvo-database"]
+    outlook_user_auths_collection = database["user-outlook-auths"]
+
+    outlook_auth_document = {
+      "auth0_user_id": user_id,
+      "outlook_access_token": access_token,
+      "outlook_refresh_token": refresh_token
+    }
+
+    insert_result = outlook_user_auths_collection.insert_one(outlook_auth_document)
+    
+    return insert_result
+
+  def CheckUserOutlookAuth(self, user_id: str) -> bool:
+    database = self.client["swinvo-database"]
+    outlook_user_auths_collection = database["user-outlook-auths"]
+
+    find_user = outlook_user_auths_collection.find_one({"auth0_user_id": user_id})
+
+    if find_user:
+      return True
+    else:
+      return False
+
+  def GetUserOutlookTokens(self, user_id: str) -> (str, str): # access, refresh
+    database = self.client["swinvo-database"]
+    outlook_user_auths_collection = database["user-outlook-auths"]
+
+    user_document = outlook_user_auths_collection.find_one({"auth0_user_id": user_id})
+
+    if user_document:
+      tokens = (user_document["outlook_access_token"], user_document["outlook_refresh_token"])
+    else:
+      return None
+
+    return tokens
+
   def SaveUserWorkflow(self, user_id: str, workflow_name: str, workflow_steps: [str], automation_code: str, on: bool) -> str: # returns id of inserted workflow document
     database = self.client["swinvo-database"]
     user_workflows_collection = database["user-workflows"]

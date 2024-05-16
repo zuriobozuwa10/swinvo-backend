@@ -340,12 +340,27 @@ def check_gmail_auth():
 
     return flask.jsonify(gmail_auth_dict)
 
+@app.route("/check-outlook-auth", methods = ['POST'])
+def check_outlook_auth():
+    user_id = request.json['uid']
+
+    outlook_is_authed = database.CheckUserOutlookAuth(user_id)
+
+    outlook_auth_dict = {}
+
+    if outlook_is_authed:
+        outlook_auth_dict["outlook_auth"] = True
+    else:
+        outlook_auth_dict["outlook_auth"] = False
+
+    return flask.jsonify(outlook_auth_dict)
+
 
 @app.route("/auth-session", methods = ['POST'])
 def auth_session():
     state = request.json['state']
     user_id = request.json['uid']
-    if user_id != "N/A":
+    if user_id:
         state_tokens[state] = user_id
     else:
         print("NO USER ID!")
@@ -400,31 +415,16 @@ def gmail_auth_callback():
     return redirect("https://app.swinvo.com")
 
 
-@app.route("/check-gmail-permission", methods = ['GET', 'POST']) #??
-def check_gmail_permission():
-    pass
+@app.route("/outlook-auth-callback")
+def outlook_auth_callback():
+    code = request.args.get('code')
 
-@app.route("/gmail-send-email", methods = ['GET', 'POST']) #??
-def gmail_send_email():
-    pass
+    print("auth code!!!!! ", code)
+
+    return redirect("https://app.swinvo.com")
 
 
-@app.route("/debug-print")
-def debug_print():
-    print(user_chat_sessions)
-    print(state_tokens)
-    print(gmail_user_tokens)
-    return ''
-
-@app.route("/debug-endpoint-1")
-def debug_endpoint_1():
-    print("ENDPOINT 1 REACHED")
-    return ''
-
-@app.route("/debug-endpoint-2")
-def debug_endpoint_2():
-    print("ENDPOINT 2 REACHED")
-    return ''
+##### STRIPE #######
 
 
 @app.route("/stripe-create-checkout-session", methods = ['POST'])
