@@ -97,7 +97,7 @@ class OutlookCaller:
 
         #print(most_recent_email.keys())
         #print(type(most_recent_email["body"]))
-        print(most_recent_email["body"])
+        #print(most_recent_email["body"])
         #print(most_recent_email["body"].keys())
 
         body = most_recent_email["body"]
