@@ -18,6 +18,8 @@ from openai_model_user import OpenAiModelUser
 from database_accessor import DatabaseAccessor
 from gmail_caller import GmailCaller
 
+from outlook_caller import OutlookCaller
+
 import stripe
 
 ## test
@@ -90,7 +92,7 @@ def get_pre_automation_code_outlook(outlook_access_token: str, outlook_refresh_t
 
 import sys
 from llm_judgement import LlmJudgement
-from gmail_caller import OutlookCaller
+from outlook_caller import OutlookCaller
 
 access_token = "{outlook_access_token}"
 refresh_token = "{outlook_refresh_token}"
