@@ -419,9 +419,42 @@ def gmail_auth_callback():
 def outlook_auth_callback():
     code = request.args.get('code')
 
-    print("auth code!!!!! ", code)
+    # Exchange the authorization code for an access token and refresh token
+    token_url = 'https://login.microsoftonline.com/common/oauth2/v2.0/token'
+    token_data = {
+        'client_id': os.environ.get('OUTLOOK_CLIENT_ID'),
+        'client_secret': os.environ.get('OUTLOOK_CLIENT_SECRET'),
+        'grant_type': 'authorization_code',
+        'code': code,
+        'redirect_uri': 'https://auth.swinvo.com/outlook-auth-callback',
+    }
+    token_headers = {
+        'Content-Type': 'application/x-www-form-urlencoded'
+    }
 
-    return redirect("https://app.swinvo.com")
+    state = request.args.get('state')
+
+    if state in state_tokens:
+        user_id = state_tokens[state]
+    else:
+        print('Unknown state: ' + state + ' . Aborting')
+        flask.abort(400, 'User state unknown')
+
+    response = requests.post(token_url, data=token_data, headers=token_headers)
+
+    if response.status_code == 200:
+        tokens = response.json()
+
+        result = database.AddUserOutlookAuth( user_id, tokens.get('access_token'), tokens.get('refresh_token') )
+        if result is False:
+            flask.abort(500, "FAILED TO ADD USER AUTH TOKENS TO DATABASE")
+
+        # Redirect to your app
+        return redirect("https://app.swinvo.com")
+
+    else:
+        print ("BAD RESPONSE")
+
 
 
 ##### STRIPE #######
