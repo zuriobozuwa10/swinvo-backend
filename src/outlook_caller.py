@@ -10,6 +10,14 @@ import json
 
 from datetime import datetime, timedelta
 
+from bs4 import BeautifulSoup
+
+def html_to_plain_text(html_content):
+    soup = BeautifulSoup(html_content, 'html.parser')
+    plain_text = soup.get_text()
+    return plain_text
+
+
 class OutlookCaller:
   def __init__(self, access_token: str, refresh_token: str, client_id: str, client_secret: str):
     self.access_token = access_token
@@ -66,13 +74,13 @@ class OutlookCaller:
     }
 
     now = datetime.utcnow()
-    yesterday = now - timedelta(seconds=15)
+    yesterday = now - timedelta(minutes=15)
     yesterday_str = yesterday.strftime('%Y-%m-%dT%H:%M:%SZ')
 
     url = f'https://graph.microsoft.com/v1.0/me/mailFolders/Inbox/messages'
     params = {
         '$filter': f'receivedDateTime ge {yesterday_str}',
-        '$select': 'subject,receivedDateTime,from,bodyPreview',
+        '$select': 'subject,receivedDateTime,from,body',
         '$orderby': 'receivedDateTime DESC'
     }
 
@@ -86,8 +94,26 @@ class OutlookCaller:
 
         # Just get most recent one for now
         most_recent_email = emails_list[0]
-        
-        return most_recent_email["subject"] + "\n" + most_recent_email["bodyPreview"]
+
+        #print(most_recent_email.keys())
+        #print(type(most_recent_email["body"]))
+        print(most_recent_email["body"])
+        #print(most_recent_email["body"].keys())
+
+        body = most_recent_email["body"]
+
+        text = None
+
+        if body["contentType"] == "html":
+            text = html_to_plain_text(body["content"])
+        elif body["contentType"] == "text":
+            text = body["content"]
+
+        if text:
+            return most_recent_email["subject"] + "\n" + text
+        else:
+            print("no text!!!")
+            return None
     else:
         print(f"Error: {response.status_code} - {response.text}")
         return
