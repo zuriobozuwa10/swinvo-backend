@@ -90,6 +90,23 @@ class DatabaseAccessor:
 
     return tokens
 
+  def RefreshUserOutlookTokens(self, old_refresh_token: str, new_access_token: str, new_refresh_token: str) -> (str, str): # access, refresh
+    database = self.client["swinvo-database"]
+    outlook_user_auths_collection = database["user-outlook-auths"]
+
+    query = {"outlook_refresh_token": old_refresh_token}
+
+    user_document = outlook_user_auths_collection.find_one(query)
+
+    update_data = {'$set': {'outlook_access_token': new_access_token, 'outlook_refresh_token': new_refresh_token}}  # pause workflow
+
+    update_result = outlook_user_auths_collection.update_one(query, update_data)
+
+    if update_result.matched_count == 1:
+      return True
+    else:
+      return False
+
   def SaveUserWorkflow(self, user_id: str, workflow_name: str, workflow_steps: [str], automation_code: str, on: bool) -> str: # returns id of inserted workflow document
     database = self.client["swinvo-database"]
     user_workflows_collection = database["user-workflows"]

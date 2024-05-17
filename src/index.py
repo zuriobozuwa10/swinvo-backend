@@ -85,6 +85,22 @@ client_secret = "{os.environ.get('GMAIL_CLIENT_SECRET')}"
 
     return code
 
+def get_pre_automation_code_outlook(outlook_access_token: str, outlook_refresh_token: str):
+    code = f'''
+
+import sys
+from llm_judgement import LlmJudgement
+from gmail_caller import OutlookCaller
+
+access_token = "{outlook_access_token}"
+refresh_token = "{outlook_refresh_token}"
+client_id = "{os.environ.get('OUTLOOK_CLIENT_ID')}"
+client_secret = "{os.environ.get('OUTLOOK_CLIENT_SECRET')}"
+        
+        '''
+
+    return code
+
 def RunWorkflow(workflow_id: str):
     workflow_doc = database.GetWorkflowById(workflow_id)
 
@@ -93,12 +109,16 @@ def RunWorkflow(workflow_id: str):
     gmail_tokens = database.GetUserGmailTokens(user_id)
 
     # TODO Make this more robust; let user know at front end that we can't do this workflow
-    if gmail_tokens == None:
-        return
+    #if gmail_tokens == None:
+    #    return
+
+    outlook_tokens = database.GetUserOutlookTokens(user_id)
 
     workflow_file_path = user_id + "_" + generate_random_string(8) + "_workflow.py" # nasty workaround for imports being disgusting
 
-    pre_automation_code = get_pre_automation_code(gmail_tokens[0], gmail_tokens[1])
+    #pre_automation_code = get_pre_automation_code(gmail_tokens[0], gmail_tokens[1])
+
+    pre_automation_code = get_pre_automation_code_outlook(outlook_tokens[0], outlook_tokens[1])
 
     full_automation_code = pre_automation_code + workflow_doc["automation_code"]
 
@@ -168,12 +188,19 @@ def workflow_action():
         if len(response_array) < 2:
             return flask.jsonify(apple)  ## Return just a continuation of the convo if response does not have an automation
 
-        gmail_tokens = database.GetUserGmailTokens(user_id)
+        #gmail_tokens = database.GetUserGmailTokens(user_id)
 
-        if gmail_tokens == None:
-            return flask.jsonify({"message": "Please integrate with Gmail."}) # TODO: Change this for all integrations
+        #if gmail_tokens == None:
+        #    return flask.jsonify({"message": "Please integrate with Gmail."}) # TODO: Change this for all integrations
 
-        pre_automation_code = get_pre_automation_code(gmail_tokens[0], gmail_tokens[1])
+        outlook_tokens = database.GetUserOutlookTokens(user_id)
+
+        if outlook_tokens == None:
+            return flask.jsonify({"message": "Please integrate with Microsoft Outlook."}) # TODO: Change this for all integrations
+
+        #pre_automation_code = get_pre_automation_code(gmail_tokens[0], gmail_tokens[1])
+
+        pre_automation_code = get_pre_automation_code_outlook(outlook_tokens[0], outlook_tokens[1])
 
         workflow_name = response_array[1].strip() # strip removes whitespace
         apple["workflow_name"] = workflow_name
@@ -294,16 +321,34 @@ def send_message():
     workflow_id_string = request.json['workflow_id']
     message_index = request.json['message_index']
 
-    gmail_tokens = database.GetUserGmailTokens(user_id)
+    #email_provider = "gmail"
+    email_provider = "outlook"
 
-    gmail_caller = GmailCaller(gmail_tokens[0], gmail_tokens[1], os.environ.get('GMAIL_CLIENT_ID'), os.environ.get('GMAIL_CLIENT_SECRET'))
+    if email_provider == "gmail":
 
-    email_tuple = database.GetEmailFromWorkflow(workflow_id_string, message_index)
+        gmail_tokens = database.GetUserGmailTokens(user_id)
 
-    if gmail_caller.SendEmail(email_tuple[0], email_tuple[1], email_tuple[2]):
-        pass
-    else:
-        return {"message": "Failed to send message"}
+        gmail_caller = GmailCaller(gmail_tokens[0], gmail_tokens[1], os.environ.get('GMAIL_CLIENT_ID'), os.environ.get('GMAIL_CLIENT_SECRET'))
+
+        email_tuple = database.GetEmailFromWorkflow(workflow_id_string, message_index)
+
+        if gmail_caller.SendEmail(email_tuple[0], email_tuple[1], email_tuple[2]):
+            pass
+        else:
+            return {"message": "Failed to send message"}
+
+    elif email_provider == "outlook":
+
+        outlook_tokens = database.GetUserOutlookTokens(user_id)
+
+        outlook_caller = OutlookCaller(outlook_tokens[0], outlook_tokens[1], os.environ.get('OUTLOOK_CLIENT_ID'), os.environ.get('OUTLOOK_CLIENT_SECRET'))
+
+        email_tuple = database.GetEmailFromWorkflow(workflow_id_string, message_index)
+
+        if outlook_caller.SendEmail(email_tuple[0], email_tuple[1], email_tuple[2]):
+            pass
+        else:
+            return {"message": "Failed to send message"}
 
     if database.DeleteEmailFromWorkflow(workflow_id_string, message_index):
         return {"message": "message sent successfully and deleted from database"}
