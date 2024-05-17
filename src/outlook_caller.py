@@ -126,6 +126,8 @@ class OutlookCaller:
     
     if response.status_code == 202:
         print("Email sent successfully.")
+        return True
     else:
         print(f"Error sending email: {response.status_code}")
         print(response.json())
+        return False
