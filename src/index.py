@@ -106,13 +106,16 @@ def RunWorkflow(workflow_id: str):
 
     user_id = workflow_doc["auth0_user_id"]
 
-    gmail_tokens = database.GetUserGmailTokens(user_id)
+    #gmail_tokens = database.GetUserGmailTokens(user_id)
 
     # TODO Make this more robust; let user know at front end that we can't do this workflow
     #if gmail_tokens == None:
     #    return
 
     outlook_tokens = database.GetUserOutlookTokens(user_id)
+
+    if outlook_tokens == None:
+        return
 
     workflow_file_path = user_id + "_" + generate_random_string(8) + "_workflow.py" # nasty workaround for imports being disgusting
 
