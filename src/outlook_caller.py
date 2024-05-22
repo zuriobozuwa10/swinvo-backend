@@ -157,3 +157,4 @@ class OutlookCaller:
         print(f"Error sending email: {response.status_code}")
         print(response.json())
         return False
+
