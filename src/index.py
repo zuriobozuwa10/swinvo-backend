@@ -185,8 +185,9 @@ def workflow_action():
 
         input_text = request.json['text']
 
-        print('Someone chatting: ', input_text)
-        logging.info('Someone chatting: ', input_text)
+        chatting_string = 'Someone chatting: ' + input_text
+        print(chatting_string)
+        logging.info(chatting_string)
 
         model_response = user_chat_sessions[user_id].Use(input_text)
 
@@ -214,7 +215,7 @@ def workflow_action():
         outlook_tokens = database.GetUserOutlookTokens(user_id)
 
         if outlook_tokens == None:
-            return flask.jsonify({"message": "Please integrate with Microsoft Outlook."}) # TODO: Change this for all integrations
+            apple["unsatisfied_integrations"] = ["outlook"]
 
         #pre_automation_code = get_pre_automation_code(gmail_tokens[0], gmail_tokens[1])
 
@@ -225,6 +226,7 @@ def workflow_action():
 
         workflow_steps = response_array[2].split(",")
         apple["steps"] = workflow_steps
+
 
         automation_code = response_array[3]
 
