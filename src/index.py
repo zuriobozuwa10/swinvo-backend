@@ -20,6 +20,8 @@ from gmail_caller import GmailCaller
 
 from outlook_caller import OutlookCaller
 
+import logging
+
 import stripe
 
 ## test
@@ -29,6 +31,14 @@ import stripe
 stripe.api_key = os.environ.get('STRIPE_SECRET_KEY')
 
 app = flask.Flask(__name__)
+
+#log
+
+logging.basicConfig(
+    filename='swinvo.log',  # Name of the log file
+    level=logging.DEBUG,  # Set the logging level
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'  # Log message format
+)
 
 database = DatabaseAccessor(os.environ.get('MONGO_DB_USER'), os.environ.get('MONGO_DB_PASSWORD'))
 
@@ -174,6 +184,9 @@ def workflow_action():
             user_chat_sessions[user_id] = user_model
 
         input_text = request.json['text']
+
+        print('Someone chatting: ', input_text)
+        logging.info('Someone chatting: ', input_text)
 
         model_response = user_chat_sessions[user_id].Use(input_text)
 

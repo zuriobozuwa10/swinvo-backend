@@ -10,7 +10,7 @@ class DatabaseAccessor:
     try:
       # Try listing databases to check connection status
       database_names = self.client.list_database_names()
-      print("MongoDB Connection successful. Available databases:", database_names)
+      #print("MongoDB Connection successful. Available databases:", database_names)
     except pymongo.errors.ServerSelectionTimeoutError as err:
       print("MongoDB Connection failed:", err)
 

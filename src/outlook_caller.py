@@ -56,7 +56,7 @@ class OutlookCaller:
         else:
           # expected
           self.database.RefreshUserOutlookTokens(old_refresh_token, new_tokens['access_token'], old_refresh_token)
-          print("outlook token refreshed!")
+          #print("outlook token refreshed!")
         return True
     else:
         print(f"Error refreshing token: {response.status_code}")
