@@ -216,6 +216,8 @@ def workflow_action():
 
         if outlook_tokens == None:
             apple["unsatisfied_integrations"] = ["outlook"]
+        else:
+            apple["unsatisfied_integrations"] = []
 
         #pre_automation_code = get_pre_automation_code(gmail_tokens[0], gmail_tokens[1])
 
