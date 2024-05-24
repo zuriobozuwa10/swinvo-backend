@@ -212,11 +212,12 @@ def workflow_action():
         #if gmail_tokens == None:
         #    return flask.jsonify({"message": "Please integrate with Gmail."}) # TODO: Change this for all integrations
 
-        outlook_tokens = database.GetUserOutlookTokens(user_id)
 
         if outlook_tokens == None:
             apple["unsatisfied_integrations"] = ["outlook"]
+            outlook_tokens = ("ABC", "CDF")
         else:
+            outlook_tokens = database.GetUserOutlookTokens(user_id)
             apple["unsatisfied_integrations"] = []
 
         #pre_automation_code = get_pre_automation_code(gmail_tokens[0], gmail_tokens[1])
