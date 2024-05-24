@@ -20,8 +20,6 @@ from gmail_caller import GmailCaller
 
 from outlook_caller import OutlookCaller
 
-import logging
-
 import stripe
 
 ## test
@@ -32,13 +30,6 @@ stripe.api_key = os.environ.get('STRIPE_SECRET_KEY')
 
 app = flask.Flask(__name__)
 
-#log
-
-logging.basicConfig(
-    filename='swinvo.log',  # Name of the log file
-    level=logging.DEBUG,  # Set the logging level
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'  # Log message format
-)
 
 database = DatabaseAccessor(os.environ.get('MONGO_DB_USER'), os.environ.get('MONGO_DB_PASSWORD'))
 
@@ -58,6 +49,10 @@ state_tokens = {}
 
 # Each token tuple: (access_token, refresh_token)
 gmail_user_tokens = {}
+
+def simple_logger(log_message: str, file_path: str = "swinvo.log"):
+    with open(file_path, 'a') as file:
+        file.write(log_message + '\n')
 
 def generate_random_string(length):
     return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
@@ -187,7 +182,7 @@ def workflow_action():
 
         chatting_string = 'Someone chatting: ' + input_text
         print(chatting_string)
-        logging.info(chatting_string)
+        simple_logger(chatting_string)
 
         model_response = user_chat_sessions[user_id].Use(input_text)
 
@@ -233,6 +228,8 @@ def workflow_action():
 
         workflow_steps = response_array[2].split(",")
         apple["steps"] = workflow_steps
+
+        simple_logger(workflow_steps)
 
 
         automation_code = response_array[3]
