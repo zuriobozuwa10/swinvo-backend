@@ -529,6 +529,9 @@ def outlook_auth_callback():
 def log_event():
     user_id = request.json['uid']
 
+    if not user_id:
+        user_id = "Not_Signed_In"
+
     message = request.json['message']
 
     log_string = user_id + ": " + message
