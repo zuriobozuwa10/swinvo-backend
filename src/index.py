@@ -525,6 +525,17 @@ def outlook_auth_callback():
         print ("BAD RESPONSE")
 
 
+@app.route("/log-event", methods = ['POST'])
+def log_event():
+    user_id = request.json['uid']
+
+    message = request.json['message']
+
+    log_string = user_id + ": " + message
+
+    simple_logger(log_string)
+    print(log_string)
+
 
 ##### STRIPE #######
 
