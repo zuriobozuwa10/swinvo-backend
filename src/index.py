@@ -52,7 +52,7 @@ gmail_user_tokens = {}
 
 def simple_logger(log_message: str, file_path: str = "swinvo.log"):
     with open(file_path, 'a') as file:
-        file.write(log_message + '\n')
+        file.write(str(log_message) + '\n')
 
 def generate_random_string(length):
     return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
