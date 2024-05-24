@@ -539,6 +539,8 @@ def log_event():
     simple_logger(log_string)
     print(log_string)
 
+    flask.jsonify(success=True), 200
+
 
 ##### STRIPE #######
 
