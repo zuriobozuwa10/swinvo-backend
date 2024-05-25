@@ -507,7 +507,7 @@ def outlook_auth_callback():
         user_id = state_tokens[state]
     else:
         print('Unknown state: ' + state + ' . Aborting')
-        flask.abort(400, 'User state unknown')
+        flask.abort(400, 'User state unknown. THIS IS A KNOWN AUTH0 BUG ON SAFARI. PLEASE USE GOOGLE CHROME INSTEAD')
 
     response = requests.post(token_url, data=token_data, headers=token_headers)
 
