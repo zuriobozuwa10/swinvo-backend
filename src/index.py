@@ -80,6 +80,7 @@ def get_pre_automation_code(gmail_access_token: str, gmail_refresh_token: str):
     code = f'''
 
 import sys
+import os
 from llm_judgement import LlmJudgement
 from gmail_caller import GmailCaller
 
@@ -96,6 +97,7 @@ def get_pre_automation_code_outlook(outlook_access_token: str, outlook_refresh_t
     code = f'''
 
 import sys
+import os
 from llm_judgement import LlmJudgement
 from outlook_caller import OutlookCaller
 
