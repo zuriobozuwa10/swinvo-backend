@@ -532,7 +532,7 @@ def log_event():
     user_id = request.json['uid']
 
     if not user_id:
-        user_id = "Not_Signed_In"
+        user_id = "n/a"
 
     message = request.json['message']
 
