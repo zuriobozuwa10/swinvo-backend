@@ -38,7 +38,7 @@ database = DatabaseAccessor(os.environ.get('MONGO_DB_USER'), os.environ.get('MON
 # create session from scratch because flask is a cunt
 session = {}
 
-intro_path = "intro2_outlook.txt"
+intro_path = "intro_system.txt"
 
 # Store user chat sessions in a dictionary for now. TODO (ZO): Improve this.
 # Resets after every deployment
