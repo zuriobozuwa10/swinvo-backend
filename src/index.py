@@ -175,9 +175,12 @@ def workflow_action():
             if ( len(database.GetUserWorkflows(user_id)) > 0 ):
                 return flask.jsonify({"message": "Get Swinvo Pro to own more than 1 workflow!"})
 
+
+        system_content = intro
+
         if user_id not in user_chat_sessions:
-            user_model = OpenAiModelUser()
-            user_model.Use(intro)
+            user_model = OpenAiModelUser(system_content=system_content)
+            #user_model.Use(intro) #using system instead?
             user_chat_sessions[user_id] = user_model
 
         input_text = request.json['text']
