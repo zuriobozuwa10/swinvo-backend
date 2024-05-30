@@ -197,7 +197,7 @@ def workflow_action():
         if user_id:
             chatting_string = user_id + input_text
         else:
-            chatting_string = "n/a" + input_text
+            chatting_string = "n/a " + input_text
 
         print(chatting_string)
         simple_logger(chatting_string)
