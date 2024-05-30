@@ -164,6 +164,7 @@ def workflow_action():
     if workflow_action == "create" or workflow_action == None or workflow_action == "":
 
         print(user_chat_sessions)
+        print(non_signed_in_chat_sessions)
 
         user_id = request.json['uid']
 
