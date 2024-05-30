@@ -169,7 +169,7 @@ def workflow_action():
         user_id = request.json['uid']
 
         non_signed_in_chat_session_id = request.json['non_signed_in_chat_session_id']
-        print(non_signed_in_chat_session_id)
+        #print(non_signed_in_chat_session_id)
 
         #if not user_id:
         #    return flask.jsonify({"message": "Please Sign In!"})
@@ -221,6 +221,7 @@ def workflow_action():
             print(entry)
 
         apple = {"message": response_array[0]}
+        apple["non_signed_in_chat_session_id"] = non_signed_in_chat_session_id
 
         if len(response_array) < 2:
             return flask.jsonify(apple)  ## Return just a continuation of the convo if response does not have an automation
@@ -254,11 +255,6 @@ def workflow_action():
 
         simple_logger(workflow_steps)
 
-        print("still?")
-        print(non_signed_in_chat_session_id)
-        apple["non_signed_in_chat_session_id"] = non_signed_in_chat_session_id
-        print(apple["non_signed_in_chat_session_id"])
-
         automation_code = response_array[3]
 
         full_automation_code = pre_automation_code + automation_code
@@ -283,7 +279,7 @@ def workflow_action():
 
         apple["session_id"] = encrypt_message(session_id)
 
-        print(apple)
+        #print(apple)
         return flask.jsonify(apple)
     
     elif workflow_action == "run":
