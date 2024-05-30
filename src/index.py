@@ -224,7 +224,7 @@ def workflow_action():
         apple["non_signed_in_chat_session_id"] = non_signed_in_chat_session_id
 
         if len(response_array) < 2:
-            return flask.jsonify(apple)  ## Return just a continuation of the convo if response does not have an automation
+            return flask.jsonify(apple)  ## RETURN just a continuation of the convo if response does not have an automation
 
         #gmail_tokens = database.GetUserGmailTokens(user_id)
 
