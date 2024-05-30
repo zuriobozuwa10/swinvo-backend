@@ -305,6 +305,15 @@ def workflow_action():
         
         return {"message": "workflow saved successfully"}
 
+@app.route("/reset-chat", methods = ['POST'])
+def reset_chat():
+    user_id = request.json['uid']
+
+    if user_id in user_chat_sessions:
+        del user_chat_sessions[user_id]
+
+    return {"message": "chat reset successfully"}
+
 @app.route("/list-workflows", methods = ['POST'])
 def list_workflows():
     # list user's workflows
