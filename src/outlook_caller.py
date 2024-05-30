@@ -64,7 +64,7 @@ class OutlookCaller:
         return False
     
 
-  def CheckForNewEmail(self) -> []: # returns array for now
+  def CheckForNewEmail(self) -> str:
     self.RefreshAccessToken()
 
     url = "https://graph.microsoft.com/v1.0/me/sendMail"
@@ -74,7 +74,7 @@ class OutlookCaller:
     }
 
     now = datetime.utcnow()
-    yesterday = now - timedelta(seconds=15)
+    yesterday = now - timedelta(days=15)
     yesterday_str = yesterday.strftime('%Y-%m-%dT%H:%M:%SZ')
 
     url = f'https://graph.microsoft.com/v1.0/me/mailFolders/Inbox/messages'
@@ -110,7 +110,11 @@ class OutlookCaller:
             text = body["content"]
 
         if text:
-            return most_recent_email["subject"] + "\n" + text
+            email = {}
+            email["text"] = most_recent_email["subject"] + "\n" + text
+            email["from"] = most_recent_email["from"]["emailAddress"]["address"]
+            #print(email["from"])
+            return email
         else:
             print("no text!!!")
             return None
