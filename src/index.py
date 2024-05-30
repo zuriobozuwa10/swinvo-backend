@@ -202,10 +202,10 @@ def workflow_action():
         print(chatting_string)
         simple_logger(chatting_string)
     
-    if user_id:
-        model_response = user_chat_sessions[user_id].Use(input_text)
-    else:
-        model_response = non_signed_in_chat_sessions[non_signed_in_chat_session_id].Use(input_text)
+        if user_id:
+            model_response = user_chat_sessions[user_id].Use(input_text)
+        else:
+            model_response = non_signed_in_chat_sessions[non_signed_in_chat_session_id].Use(input_text)
 
         #print(model_response) # debug
 
