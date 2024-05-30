@@ -265,6 +265,44 @@ class DatabaseAccessor:
     else:
       return False
 
+  def SetWorkflowToGood(self, mongo_obj_id_string: str) -> bool:
+    database = self.client["swinvo-database"]
+    user_workflows_collection = database["user-workflows"]
+
+    obj_id = ObjectId(mongo_obj_id_string)
+
+    query = {"_id": obj_id}
+
+    workflow_doc = user_workflows_collection.find_one(query)
+
+    update_data = {'$set': {'error': False}}  # Good
+
+    update_result = user_workflows_collection.update_one(query, update_data)
+
+    if update_result.matched_count == 1:
+      return True
+    else:
+      return False
+
+  def SetWorkflowToError(self, mongo_obj_id_string: str) -> bool:
+    database = self.client["swinvo-database"]
+    user_workflows_collection = database["user-workflows"]
+
+    obj_id = ObjectId(mongo_obj_id_string)
+
+    query = {"_id": obj_id}
+
+    workflow_doc = user_workflows_collection.find_one(query)
+
+    update_data = {'$set': {'error': True}}  # Good
+
+    update_result = user_workflows_collection.update_one(query, update_data)
+
+    if update_result.matched_count == 1:
+      return True
+    else:
+      return False
+
   def DeleteUserWorkflow(self, mongo_obj_id_string: str) -> bool:
     database = self.client["swinvo-database"]
     user_workflows_collection = database["user-workflows"]
