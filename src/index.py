@@ -44,6 +44,8 @@ intro_path = "intro_system.txt"
 # Resets after every deployment
 user_chat_sessions = {}
 
+non_signed_in_chat_sessions = {}
+
 # Used to associate an app (e.g gmail) integration with a swinvo account
 state_tokens = {}
 
@@ -165,6 +167,8 @@ def workflow_action():
 
         user_id = request.json['uid']
 
+        non_signed_in_chat_session_id = request.json['non_signed_in_chat_session_id']
+
         #if not user_id:
         #    return flask.jsonify({"message": "Please Sign In!"})
 
@@ -178,18 +182,30 @@ def workflow_action():
 
         system_content = intro
 
-        if user_id not in user_chat_sessions or not user_id:
+        if user_id and user_id not in user_chat_sessions:
             user_model = OpenAiModelUser(system_content=system_content)
             #user_model.Use(intro) #using system instead?
             user_chat_sessions[user_id] = user_model
+        
+        if not user_id and non_signed_in_chat_session_id and non_signed_in_chat_session_id not in non_signed_in_chat_sessions:
+            model = OpenAiModelUser(system_content=system_content)
+            non_signed_in_chat_sessions[non_signed_in_chat_session_id] = model
 
         input_text = request.json['text']
 
-        chatting_string = 'Someone chatting: ' + input_text
+        # logging
+        if user_id:
+            chatting_string = user_id + input_text
+        else:
+            chatting_string = "n/a" + input_text
+
         print(chatting_string)
         simple_logger(chatting_string)
-
+    
+    if user_id:
         model_response = user_chat_sessions[user_id].Use(input_text)
+    else:
+        model_response = non_signed_in_chat_sessions[non_signed_in_chat_session_id].Use(input_text)
 
         #print(model_response) # debug
 
@@ -236,6 +252,7 @@ def workflow_action():
 
         simple_logger(workflow_steps)
 
+        apple["non_signed_in_chat_session_id"] = non_signed_in_chat_session_id
 
         automation_code = response_array[3]
 
