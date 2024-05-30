@@ -169,6 +169,7 @@ def workflow_action():
         user_id = request.json['uid']
 
         non_signed_in_chat_session_id = request.json['non_signed_in_chat_session_id']
+        print(non_signed_in_chat_session_id)
 
         #if not user_id:
         #    return flask.jsonify({"message": "Please Sign In!"})
@@ -253,7 +254,10 @@ def workflow_action():
 
         simple_logger(workflow_steps)
 
+        print("still?")
+        print(non_signed_in_chat_session_id)
         apple["non_signed_in_chat_session_id"] = non_signed_in_chat_session_id
+        print(apple["non_signed_in_chat_session_id"])
 
         automation_code = response_array[3]
 
