@@ -197,7 +197,7 @@ def workflow_action():
 
         # logging
         if user_id:
-            chatting_string = user_id + input_text
+            chatting_string = user_id + " " + input_text
         else:
             chatting_string = "n/a " + input_text
 
@@ -256,6 +256,8 @@ def workflow_action():
         simple_logger(workflow_steps)
 
         automation_code = response_array[3]
+
+        simple_logger(automation_code)
 
         full_automation_code = pre_automation_code + automation_code
 
@@ -343,6 +345,12 @@ def check_workflow_status():
         return {"workflow_on": True}
     else:
         return {"workflow_on": False}
+
+@app.route("/check-workflow-error", methods = ['POST'])
+def check_workflow_error():
+    workflow_id_string = request.json['workflow_id']
+
+    return {"workflow_error": database.CheckWorkflowError(workflow_id_string)}
 
 @app.route("/pause-workflow", methods = ['POST'])
 def pause_workflow():

@@ -303,6 +303,17 @@ class DatabaseAccessor:
     else:
       return False
 
+  def CheckWorkflowError(self, mongo_obj_id_string: str) -> bool:
+    obj_id = ObjectId(mongo_obj_id_string)
+
+    workflow_doc = user_workflows_collection.find_one({"_id": obj_id})
+
+    if workflow_doc == None:
+      #print("Workflow does not exist")
+      return False
+
+    return workflow_doc['error']
+
   def DeleteUserWorkflow(self, mongo_obj_id_string: str) -> bool:
     database = self.client["swinvo-database"]
     user_workflows_collection = database["user-workflows"]
