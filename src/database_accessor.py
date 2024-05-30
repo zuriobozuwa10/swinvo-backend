@@ -313,7 +313,10 @@ class DatabaseAccessor:
 
     if workflow_doc == None:
       #print("Workflow does not exist")
-      return False
+      return True # error
+
+    if workflow_doc['error_lock'] == 1:
+      return True
 
     return workflow_doc['error']
 
