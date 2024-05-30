@@ -136,8 +136,24 @@ def RunWorkflow(workflow_id: str):
 
     full_automation_code = pre_automation_code + workflow_doc["automation_code"]
 
+    ### FIX
+    fixer = OpenAiModelUser()
+
+    fix_query = """
+
+    Please turn the following python script into valid python. I.e it will have no interpretation errors. 
+    If it is already valid python, please return the indentical script. Please don't say or print anything else. 
+    Only print the script.
+
+    """
+
+    fixed_full_automation_code = fixer.Use(fix_query + full_automation_code)
+
+    print("FIXED")
+    print(fixed_full_automation_code)
+
     with open(workflow_file_path, "w") as workflow_file:
-        workflow_file.write(full_automation_code)
+        workflow_file.write(fixed_full_automation_code)
     
     subprocess.Popen(["python3", "workflow_runner.py", workflow_file_path, workflow_id])
 
