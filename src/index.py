@@ -283,6 +283,7 @@ def workflow_action():
 
         apple["session_id"] = encrypt_message(session_id)
 
+        print(apple)
         return flask.jsonify(apple)
     
     elif workflow_action == "run":
