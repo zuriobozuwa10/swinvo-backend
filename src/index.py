@@ -178,7 +178,7 @@ def workflow_action():
 
         system_content = intro
 
-        if user_id not in user_chat_sessions:
+        if user_id not in user_chat_sessions or not user_id:
             user_model = OpenAiModelUser(system_content=system_content)
             #user_model.Use(intro) #using system instead?
             user_chat_sessions[user_id] = user_model
