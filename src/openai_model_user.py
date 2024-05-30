@@ -6,8 +6,6 @@ class OpenAiModelUser:
     self.client = OpenAI(api_key='')
     self.convo_history = ""
 
-    if 
-    system_message = {}
     user_message = {}
     user_message["role"] = "user"
     user_message["content"] = ""
@@ -22,7 +20,7 @@ class OpenAiModelUser:
   def Use(self, input_message: str) -> str:
     input_message_with_helpers = "\nHuman: " + input_message + "\nAI: "
 
-    self.user_message_array[1]["content"] = self.convo_history + input_message_with_helpers
+    self.user_message_array[-1]["content"] = self.convo_history + input_message_with_helpers
 
     self.convo_history = self.convo_history + input_message_with_helpers
 
@@ -31,7 +29,7 @@ class OpenAiModelUser:
       messages=self.user_message_array
     )
 
-    ai_response = chat_completion.choices[1].message.content
+    ai_response = chat_completion.choices[-1].message.content
 
     self.convo_history = self.convo_history + ai_response
 
