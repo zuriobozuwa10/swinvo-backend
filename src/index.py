@@ -136,8 +136,14 @@ def RunWorkflow(workflow_id: str):
 
     full_automation_code = pre_automation_code + workflow_doc["automation_code"]
 
+    # fix
+    fixed_full_automation_code = full_automation_code.replace("```python", "").replace("```", "")
+
+    print("FIXED: " )
+    print(fixed_full_automation_code)
+
     with open(workflow_file_path, "w") as workflow_file:
-        workflow_file.write(full_automation_code)
+        workflow_file.write(fixed_full_automation_code)
     
     subprocess.Popen(["python3", "workflow_runner.py", workflow_file_path, workflow_id])
 
