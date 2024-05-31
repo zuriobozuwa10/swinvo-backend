@@ -213,7 +213,9 @@ def workflow_action():
 
         #print(model.GetConvoHistory())
 
-        response_array = model_response.split('SPLIT')
+        response_array_unfiltered = model_response.split('SPLIT')
+
+        response_array = [element for element in response_array_unfiltered if element.strip() != ""]
 
         # Dbg
         print(response_array)
