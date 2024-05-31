@@ -238,9 +238,7 @@ def workflow_action():
 
         #print(model.GetConvoHistory())
 
-        response_array_unfiltered = model_response.split('SPLIT')
-
-        response_array = [element for element in response_array_unfiltered if element.strip() != "" and element.strip() != "\n" and element.strip() != " "] 
+        response_array = model_response.split('SPLIT') 
 
         # Dbg
         print(response_array)
@@ -277,7 +275,10 @@ def workflow_action():
         workflow_name = response_array[1].strip() # strip removes whitespace
         apple["workflow_name"] = workflow_name
 
-        workflow_steps = response_array[2].split("\n")
+        workflow_steps_unfiltered = response_array[2].split("\n")
+
+        workflow_steps = [element for element in workflow_steps_unfiltered if element.strip() != "" and element.strip() != "\n" and element.strip() != " "]
+
         apple["steps"] = workflow_steps
 
         simple_logger(workflow_steps)
