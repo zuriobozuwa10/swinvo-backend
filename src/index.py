@@ -327,6 +327,11 @@ def reset_chat():
 
     if user_id in user_chat_sessions:
         del user_chat_sessions[user_id]
+    
+    # logging
+    log_string = user_id + ": " + "Chat reset!"
+    print(log_string)
+    simple_logger(log_string)
 
     return {"message": "chat reset successfully"}
 
