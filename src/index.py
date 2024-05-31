@@ -114,6 +114,8 @@ client_secret = "{os.environ.get('OUTLOOK_CLIENT_SECRET')}"
 
     return code
 
+
+# garbage, doesnt work
 def remove_non_code(text):
     code_lines = []
     for line in text.split('\n'):
@@ -130,12 +132,10 @@ def fix_automation_code(automation_code: str) -> str:
 
     strawberry = automation_code.replace("```python", "").replace("```", "")
 
-    fixed_automation = remove_non_code(strawberry)
-
     print("FIXED: " )
-    print(fixed_automation)
+    print(strawberry)
 
-    return fixed_automation
+    return strawberry
 
 def RunWorkflow(workflow_id: str):
     workflow_doc = database.GetWorkflowById(workflow_id)
