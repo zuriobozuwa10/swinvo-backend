@@ -250,7 +250,7 @@ def workflow_action():
         workflow_name = response_array[1].strip() # strip removes whitespace
         apple["workflow_name"] = workflow_name
 
-        workflow_steps = response_array[2].split(",")
+        workflow_steps = response_array[2].split("\n")
         apple["steps"] = workflow_steps
 
         simple_logger(workflow_steps)
