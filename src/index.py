@@ -20,6 +20,8 @@ from gmail_caller import GmailCaller
 
 from outlook_caller import OutlookCaller
 
+import ast
+
 import stripe
 
 ## test
@@ -112,6 +114,29 @@ client_secret = "{os.environ.get('OUTLOOK_CLIENT_SECRET')}"
 
     return code
 
+def remove_non_code(text):
+    code_lines = []
+    for line in text.split('\n'):
+        try:
+            # Try to parse each line as an independent block of code
+            ast.parse(line)
+            code_lines.append(line)
+        except SyntaxError:
+            # If there's a syntax error, assume it's not valid code
+            continue
+    return '\n'.join(code_lines)
+
+def fix_automation_code(automation_code: str) -> str:
+
+    strawberry = automation_code.replace("```python", "").replace("```", "")
+
+    fixed_automation = remove_non_code(strawberry)
+
+    print("FIXED: " )
+    print(fixed_automation)
+
+    return fixed_automation
+
 def RunWorkflow(workflow_id: str):
     workflow_doc = database.GetWorkflowById(workflow_id)
 
@@ -136,14 +161,8 @@ def RunWorkflow(workflow_id: str):
 
     full_automation_code = pre_automation_code + workflow_doc["automation_code"]
 
-    # fix
-    fixed_full_automation_code = full_automation_code.replace("```python", "").replace("```", "")
-
-    print("FIXED: " )
-    print(fixed_full_automation_code)
-
     with open(workflow_file_path, "w") as workflow_file:
-        workflow_file.write(fixed_full_automation_code)
+        workflow_file.write(full_automation_code)
     
     subprocess.Popen(["python3", "workflow_runner.py", workflow_file_path, workflow_id])
 
@@ -263,7 +282,9 @@ def workflow_action():
 
         simple_logger(workflow_steps)
 
-        automation_code = response_array[3]
+        #unfixed_automation_code = response_array[3]
+
+        automation_code = fix_automation_code(response_array[3])
 
         simple_logger(automation_code)
 
