@@ -610,7 +610,10 @@ def stripe_create_checkout_session():
     #price_id = "price_1PClUKD6NaA2VbAqOvpiFRMP"
 
     #live
-    price_id = "price_1PEChCD6NaA2VbAq0rsOGGPm"
+    #price_id = "price_1PEChCD6NaA2VbAq0rsOGGPm"
+
+    #live cheaper
+    price_id = "price_1PMWNaD6NaA2VbAqivAythwH"
 
     timestamp_in_7_days = datetime.now() + timedelta(days=7, hours=5)
     trial_end = round(timestamp_in_7_days.timestamp())
