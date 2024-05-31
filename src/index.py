@@ -145,6 +145,8 @@ def RunWorkflow(workflow_id: str):
     If it is already valid python, please return the indentical script. Please don't say or print anything else. 
     Only print the script.
 
+    e.g we CANNOT have things like "```python" ... we have to just print the python script
+
     """
 
     fixed_full_automation_code = fixer.Use(fix_query + full_automation_code)
