@@ -215,7 +215,7 @@ def workflow_action():
 
         response_array_unfiltered = model_response.split('SPLIT')
 
-        response_array = [element for element in response_array_unfiltered if element.strip() != ""]
+        response_array = [element for element in response_array_unfiltered if element.strip() != "" and element.strip() != "\n" and element.strip() != " "] 
 
         # Dbg
         print(response_array)
