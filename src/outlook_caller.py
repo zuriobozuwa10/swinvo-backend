@@ -62,6 +62,27 @@ class OutlookCaller:
         print(f"Error refreshing token: {response.status_code}")
         print(response.json())
         return False
+
+  def GetUserEmailAddress(self) -> str:
+    self.RefreshAccessToken()
+
+    me_url = 'https://graph.microsoft.com/v1.0/me'
+
+    headers = {
+        'Authorization': f'Bearer {self.access_token}',
+        'Content-Type': 'application/json'
+    }
+
+    response = requests.get(me_url, headers=headers)
+
+    if response.status_code == 200:
+        user_data = response.json()
+        email_address = user_data.get('mail')  # 'mail' field contains the primary email address
+        print("Email address of user:", email_address)
+    else:
+        print("Failed to retrieve user data:", response.status_code, response.text)
+
+    return email_address
     
 
   def CheckForNewEmail(self) -> str:
