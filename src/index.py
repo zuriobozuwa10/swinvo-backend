@@ -622,6 +622,20 @@ def log_event():
 
     return flask.jsonify(success=True), 200
 
+@app.route("/feedback", methods = ['POST'])
+def feedback():
+
+    user_id = request.json['uid']
+
+    feedback = request.json['feedback']
+
+    fb_string = "FEEDBACK: " + user_id + " - " + feedback
+
+    simple_logger(fb_string)
+    print(fb_string)
+
+    return flask.jsonify(success=True), 200
+
 
 ##### STRIPE #######
 
