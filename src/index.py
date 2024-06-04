@@ -314,7 +314,7 @@ def workflow_action():
         apple["session_id"] = encrypt_message(session_id)
 
         # extra comments after code
-        apple["comments"] = response_array[4].strip()
+        # apple["comments"] = response_array[4].strip()
 
         #print(apple)
         return flask.jsonify(apple)
