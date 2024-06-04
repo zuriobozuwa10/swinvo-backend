@@ -53,10 +53,6 @@ state_tokens = {}
 # Each token tuple: (access_token, refresh_token)
 gmail_user_tokens = {}
 
-# first message in convo??
-first_message = True
-
-
 def simple_logger(log_message: str, file_path: str = "swinvo.log"):
     with open(file_path, 'a') as file:
         file.write(str(log_message) + '\n')
@@ -223,9 +219,8 @@ def workflow_action():
 
         input_text = request.json['text']
 
-        if input_text == "" and first_message == True:
+        if input_text == "":
             input_text = "Whenever I get an email from a potential customer, extract the key points from the email and send it to my colleague at jackswinby@outlook.com."
-            first_message = False
 
         # logging
         if user_id:
