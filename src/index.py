@@ -626,6 +626,8 @@ def log_event():
 def feedback():
 
     user_id = request.json['uid']
+    if not user_id:
+        user_id = "n/a"
 
     feedback = request.json['feedback']
 
