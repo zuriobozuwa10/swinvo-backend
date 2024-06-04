@@ -127,6 +127,12 @@ def remove_non_code(text):
             continue
     return '\n'.join(code_lines)
 
+
+def remove_last_two_lines(text):
+    lines = text.splitlines()  # Split the text into lines
+    new_text = '\n'.join(lines[:-2])  # Join all lines except the last two
+    return new_text
+
 def fix_automation_code(automation_code: str) -> str:
 
     strawberry = automation_code.replace("```python", "").replace("```", "")
@@ -134,7 +140,7 @@ def fix_automation_code(automation_code: str) -> str:
     print("FIXED: " )
     print(strawberry)
 
-    return strawberry
+    return remove_last_two_lines(strawberry)
 
 def RunWorkflow(workflow_id: str):
     workflow_doc = database.GetWorkflowById(workflow_id)
