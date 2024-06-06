@@ -140,7 +140,7 @@ def fix_automation_code(automation_code: str) -> str:
     print("FIXED: " )
     print(strawberry)
 
-    return remove_last_two_lines(strawberry)
+    return strawberry
 
 def RunWorkflow(workflow_id: str):
     workflow_doc = database.GetWorkflowById(workflow_id)
@@ -320,7 +320,8 @@ def workflow_action():
         apple["session_id"] = encrypt_message(session_id)
 
         # extra comments after code
-        # apple["comments"] = response_array[4].strip()
+        if len(response_array) == 4:
+            apple["comments"] = response_array[4].strip()
 
         #print(apple)
         return flask.jsonify(apple)
