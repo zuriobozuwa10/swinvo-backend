@@ -320,7 +320,7 @@ def workflow_action():
         apple["session_id"] = encrypt_message(session_id)
 
         # extra comments after code
-        if len(response_array) == 4:
+        if len(response_array) == 5:
             apple["comments"] = response_array[4].strip()
 
         #print(apple)
