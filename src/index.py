@@ -730,16 +730,20 @@ def stripe_webhook():
             database.StripeUserAnotherSubscription(user_id, customer_id, subscription_id)# add subscr when user record already exists. replace any existing
 
     elif event['type'] == 'customer.subscription.updated':
+
         subscription = event['data']['object']
 
         subscription_id = subscription["id"]
+
         if subscription['status'] == 'canceled':
             database.EndedStripeUserSubscription(subscription_id)
 
     elif event['type'] == 'customer.subscription.deleted':
+
         subscription = event['data']['object']
 
         subscription_id = subscription["id"]
+
         if subscription['status'] == 'canceled':
             database.EndedStripeUserSubscription(subscription_id)
 
