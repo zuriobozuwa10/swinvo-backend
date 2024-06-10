@@ -731,11 +731,15 @@ def stripe_webhook():
 
     elif event['type'] == 'customer.subscription.updated':
         subscription = event['data']['object']
+
+        subscription_id = subscription["id"]
         if subscription['status'] == 'canceled':
             database.EndedStripeUserSubscription(subscription_id)
 
     elif event['type'] == 'customer.subscription.deleted':
         subscription = event['data']['object']
+
+        subscription_id = subscription["id"]
         if subscription['status'] == 'canceled':
             database.EndedStripeUserSubscription(subscription_id)
 
