@@ -727,7 +727,7 @@ def stripe_webhook():
         if not database.CheckUserStripeExists(user_id):
             database.AddStripeUserFirstSubscription(user_id, customer_id, subscription_id) # add subscription when user never been subscribed before
         else:
-            database.StripeUserAnotherSubscription(user_id, customer_id, subscription_id)# add subscr when user record already exists. replace any existing
+            database.StripeUserAnotherSubscription(user_id, customer_id, subscription_id)  # add subscr when user record already exists. replace any existing
 
     elif event['type'] == 'customer.subscription.updated':
 
